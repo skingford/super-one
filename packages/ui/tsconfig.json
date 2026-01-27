@@ -1,0 +1,12 @@
+{
+  "extends": "../config/tsconfig/react.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@super-one/utils": ["../utils/src"],
+      "@super-one/utils/*": ["../utils/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

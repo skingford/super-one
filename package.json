@@ -1,0 +1,32 @@
+{
+  "name": "super-one",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "bun run --filter @super-one/web dev",
+    "dev:web": "bun run --filter @super-one/web dev",
+    "dev:admin": "bun run --filter @super-one/admin dev",
+    "build": "bun run --filter '*' build",
+    "build:web": "bun run --filter @super-one/web build",
+    "build:admin": "bun run --filter @super-one/admin build",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "bunx @biomejs/biome format --write .",
+    "typecheck": "bun run --filter '*' typecheck",
+    "prepare": "husky",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/*/.next apps/*/.turbo"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "oxlint": "^1.5.0",
+    "typescript": "^5.9.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": ["oxlint --fix"],
+    "*.{ts,tsx,js,jsx,json,css,md}": ["bunx @biomejs/biome format --write"]
+  },
+  "trustedDependencies": ["sharp", "unrs-resolver"]
+}
