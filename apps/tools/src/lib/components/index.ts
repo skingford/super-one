@@ -14,3 +14,4 @@ export { default as Toast } from "./ui/Toast.svelte";
 export { default as JsonFormatter } from "./tools/JsonFormatter.svelte";
 export { default as QrGenerator } from "./tools/QrGenerator.svelte";
 export { default as QrParser } from "./tools/QrParser.svelte";
+export { default as TimeProcessor } from "./tools/TimeProcessor.svelte";

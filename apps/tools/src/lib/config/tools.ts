@@ -36,6 +36,15 @@ export const tools: Tool[] = [
     category: "encode",
     color: "#a855f7",
   },
+  {
+    id: "time",
+    name: "Time",
+    description: "Convert timestamps & formats",
+    icon: "Clock",
+    path: "/time",
+    category: "convert",
+    color: "#fbbf24",
+  },
 ];
 
 export function getToolById(id: string): Tool | undefined {
