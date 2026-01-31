@@ -20,6 +20,15 @@
     }
   },
   "files": {
-    "ignore": ["node_modules", ".next", "dist", ".turbo", "bun.lock", "*.lock"]
+    "ignore": [
+      "node_modules",
+      ".next",
+      ".svelte-kit",
+      "dist",
+      ".turbo",
+      "bun.lock",
+      "*.lock",
+      "*.svelte"
+    ]
   }
 }
