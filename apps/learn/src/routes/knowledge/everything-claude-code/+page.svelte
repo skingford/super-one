@@ -24,6 +24,8 @@
     Brain,
     Copy,
     Check,
+    X,
+    ChevronRight,
   } from "lucide-svelte";
 
   // Copy functionality
@@ -35,81 +37,236 @@
     setTimeout(() => (copiedId = null), 2000);
   }
 
-  // Section data
-  const agents = [
+  // Detailed agent configurations
+  const agentDetails = [
     {
       name: "planner",
-      description: "功能实现规划，制定实施步骤",
+      description: "功能实现规划专家，制定详细实施步骤",
       command: "/plan",
       icon: Workflow,
       color: "text-violet-400",
       bg: "bg-violet-500/20",
+      tools: ["Read", "Grep", "Glob"],
+      model: "opus",
+      features: [
+        "需求分析与重述",
+        "风险识别与评估",
+        "分阶段实施计划",
+        "复杂度估算",
+        "等待用户确认后执行",
+      ],
+      example: `/plan 我需要添加实时通知功能
+
+Agent 返回:
+# 实施计划: 实时通知系统
+## 阶段 1: 数据库设计
+## 阶段 2: 通知服务
+## 阶段 3: 集成点
+## 风险评估
+## 预估复杂度: 中等
+
+**等待确认**: 是否执行此计划?`,
     },
     {
       name: "architect",
-      description: "系统设计决策，架构模式选择",
-      command: "architect agent",
+      description: "高级软件架构师，专注可扩展、可维护的系统设计",
+      command: "Task agent",
       icon: Layers,
       color: "text-blue-400",
       bg: "bg-blue-500/20",
+      tools: ["Read", "Grep", "Glob"],
+      model: "opus",
+      features: [
+        "系统架构设计",
+        "技术选型权衡",
+        "设计模式推荐",
+        "可扩展性分析",
+        "确保代码库一致性",
+      ],
+      example: `常见模式:
+Frontend: 组件组合、Container/Presenter、自定义 Hooks
+Backend: Repository 模式、Service 层、中间件模式
+Data: 数据库规范化、缓存层、最终一致性`,
     },
     {
       name: "tdd-guide",
-      description: "测试驱动开发引导，80%+ 覆盖率",
+      description: "TDD 开发引导，确保 80%+ 测试覆盖率",
       command: "/tdd",
       icon: TestTube,
       color: "text-green-400",
       bg: "bg-green-500/20",
+      tools: ["Read", "Write", "Edit", "Bash", "Grep"],
+      model: "opus",
+      features: [
+        "Red-Green-Refactor 循环",
+        "先写测试再写代码",
+        "单元 + 集成 + E2E 测试",
+        "边界情况覆盖",
+        "持续测试 (Watch Mode)",
+      ],
+      example: `// 1. RED: 先写失败的测试
+describe('calculateScore', () => {
+  it('should return high score for valid input', () => {
+    expect(calculateScore(data)).toBeGreaterThan(80)
+  })
+})
+
+// 2. GREEN: 写最小代码通过测试
+// 3. REFACTOR: 优化代码`,
     },
     {
       name: "code-reviewer",
-      description: "代码质量审查，最佳实践检查",
+      description: "高级代码审查员，检查质量、安全和可维护性",
       command: "/code-review",
       icon: FileCode,
       color: "text-amber-400",
       bg: "bg-amber-500/20",
+      tools: ["Read", "Grep", "Glob", "Bash"],
+      model: "opus",
+      features: [
+        "代码质量检查",
+        "安全漏洞扫描",
+        "性能问题识别",
+        "最佳实践建议",
+        "可维护性评估",
+      ],
+      example: `# 审查流程:
+1. git diff --name-only HEAD
+2. 检查每个文件:
+   - 安全问题 (硬编码密钥、SQL注入、XSS)
+   - 代码质量 (复杂度、重复代码)
+   - 性能问题 (N+1 查询、内存泄漏)`,
     },
     {
       name: "security-reviewer",
-      description: "安全漏洞检测，OWASP Top 10",
+      description: "安全漏洞检测与修复专家，OWASP Top 10",
       command: "/security-review",
       icon: Shield,
       color: "text-red-400",
       bg: "bg-red-500/20",
+      tools: ["Read", "Grep", "Glob", "Bash"],
+      model: "opus",
+      features: [
+        "OWASP Top 10 检测",
+        "密钥泄露扫描",
+        "输入验证检查",
+        "认证授权审计",
+        "漏洞 PoC 和修复代码",
+      ],
+      example: `检测项目:
+- SQL 注入
+- XSS 跨站脚本
+- SSRF 服务端请求伪造
+- 硬编码凭据
+- 不安全的加密
+- 缺失的输入验证`,
     },
     {
       name: "build-error-resolver",
-      description: "构建错误修复，TypeScript 类型问题",
+      description: "构建错误修复专家，TypeScript 类型问题",
       command: "/build-fix",
       icon: AlertTriangle,
       color: "text-orange-400",
       bg: "bg-orange-500/20",
+      tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"],
+      model: "sonnet",
+      features: [
+        "TypeScript 类型错误",
+        "构建配置问题",
+        "依赖冲突解决",
+        "最小化改动修复",
+        "快速让构建变绿",
+      ],
+      example: `# 修复流程:
+1. npm run build 2>&1 | head -100
+2. 分析错误信息
+3. 定位问题文件
+4. 最小改动修复
+5. 验证构建通过`,
     },
     {
       name: "e2e-runner",
-      description: "Playwright E2E 测试执行",
+      description: "Playwright E2E 测试专家",
       command: "/e2e",
       icon: Globe,
       color: "text-cyan-400",
       bg: "bg-cyan-500/20",
+      tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"],
+      model: "sonnet",
+      features: [
+        "用户旅程测试",
+        "Page Object 模式",
+        "截图和视频录制",
+        "Trace 上传",
+        "Flaky 测试隔离",
+      ],
+      example: `test('用户可以搜索并查看详情', async ({ page }) => {
+  await page.goto('/')
+  await page.fill('input[placeholder="Search"]', 'query')
+  await page.waitForResponse(resp =>
+    resp.url().includes('/api/search'))
+  await expect(page.locator('.result')).toBeVisible()
+})`,
     },
     {
       name: "refactor-cleaner",
-      description: "死代码清理，重复代码整合",
+      description: "死代码清理和重复代码整合专家",
       command: "/refactor-clean",
       icon: Zap,
       color: "text-pink-400",
       bg: "bg-pink-500/20",
+      tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"],
+      model: "sonnet",
+      features: [
+        "死代码检测 (knip, depcheck)",
+        "未使用导出移除",
+        "重复代码合并",
+        "安全重构验证",
+        "依赖清理",
+      ],
+      example: `# 分析工具:
+npx knip          # 检测未使用的导出
+npx depcheck      # 检测未使用的依赖
+npx ts-prune      # 检测未使用的 TS 导出`,
     },
     {
       name: "doc-updater",
-      description: "文档同步更新，Codemap 刷新",
+      description: "文档和 Codemap 同步更新专家",
       command: "/update-docs",
       icon: BookOpen,
       color: "text-indigo-400",
       bg: "bg-indigo-500/20",
+      tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"],
+      model: "sonnet",
+      features: [
+        "Codemap 生成与更新",
+        "README 同步",
+        "API 文档更新",
+        "变更日志维护",
+        "架构图生成",
+      ],
+      example: `# 更新流程:
+/update-codemaps  # 更新代码地图
+/update-docs      # 同步所有文档
+
+生成: docs/CODEMAPS/*.md`,
     },
   ];
+
+  // Simple agents list for grid display
+  const agents = agentDetails.map(a => ({
+    name: a.name,
+    description: a.description,
+    command: a.command,
+    icon: a.icon,
+    color: a.color,
+    bg: a.bg,
+    tools: a.tools,
+    model: a.model,
+  }));
+
+  // Selected agent for detail view
+  let selectedAgent = $state<typeof agentDetails[0] | null>(null);
 
   const commands = [
     { name: "/tdd", description: "测试驱动开发流程", category: "开发" },
@@ -349,25 +506,143 @@ const apiKey = process.env.API_KEY`;
       专用 Agents
     </h2>
     <p class="text-white/50 text-sm mb-4">
-      专用子代理，处理特定领域任务。存放于 <code class="text-white/70">~/.claude/agents/</code>
+      专用子代理，处理特定领域任务。存放于 <code class="text-white/70">~/.claude/agents/</code>。点击卡片查看详情。
     </p>
     <div class="grid md:grid-cols-3 gap-4">
-      {#each agents as agent}
+      {#each agents as agent, i}
         {@const Icon = agent.icon}
-        <BentoCard variant="outline" class="p-4 hover:bg-white/5 transition-colors">
+        <button
+          class="text-left p-4 rounded-2xl border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-200"
+          onclick={() => selectedAgent = agentDetails[i]}
+        >
           <div class="flex items-start gap-3">
             <div class={cn("p-2 rounded-xl", agent.bg)}>
               <Icon class={cn("w-5 h-5", agent.color)} />
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="font-medium text-white">{agent.name}</h3>
-              <p class="text-sm text-white/50 mt-0.5">{agent.description}</p>
-              <code class="text-xs text-violet-400 mt-2 block">{agent.command}</code>
+              <p class="text-sm text-white/50 mt-0.5 line-clamp-2">{agent.description}</p>
+              <div class="flex items-center gap-2 mt-2">
+                <code class="text-xs text-violet-400">{agent.command}</code>
+                <span class="text-xs text-white/30">· {agent.model}</span>
+              </div>
+              <div class="flex flex-wrap gap-1 mt-2">
+                {#each agent.tools.slice(0, 3) as tool}
+                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-white/5 text-white/40">{tool}</span>
+                {/each}
+                {#if agent.tools.length > 3}
+                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-white/5 text-white/40">+{agent.tools.length - 3}</span>
+                {/if}
+              </div>
             </div>
           </div>
-        </BentoCard>
+        </button>
       {/each}
     </div>
+
+    <!-- Agent Detail Modal -->
+    {#if selectedAgent}
+      {@const Icon = selectedAgent.icon}
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+      <div
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        role="dialog"
+        aria-modal="true"
+        tabindex="-1"
+        onclick={(e) => { if (e.target === e.currentTarget) selectedAgent = null; }}
+        onkeydown={(e) => { if (e.key === 'Escape') selectedAgent = null; }}
+      >
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div class="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-[#1c1c1e] border border-white/10 shadow-2xl">
+          <!-- Header -->
+          <div class="sticky top-0 z-10 p-6 pb-4 bg-[#1c1c1e] border-b border-white/10">
+            <button
+              class="absolute right-4 top-4 p-2 rounded-xl hover:bg-white/10 transition-colors"
+              onclick={() => selectedAgent = null}
+            >
+              <X class="w-5 h-5 text-white/60" />
+            </button>
+            <div class="flex items-center gap-4">
+              <div class={cn("p-3 rounded-2xl", selectedAgent.bg)}>
+                <Icon class={cn("w-8 h-8", selectedAgent.color)} />
+              </div>
+              <div>
+                <h3 class="text-2xl font-bold text-white">{selectedAgent.name}</h3>
+                <p class="text-white/50 mt-1">{selectedAgent.description}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 space-y-6">
+            <!-- Meta -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 rounded-2xl bg-white/5">
+                <p class="text-xs text-white/40 mb-1">调用命令</p>
+                <code class="text-violet-400 font-medium">{selectedAgent.command}</code>
+              </div>
+              <div class="p-4 rounded-2xl bg-white/5">
+                <p class="text-xs text-white/40 mb-1">模型</p>
+                <span class="text-white font-medium">{selectedAgent.model}</span>
+              </div>
+            </div>
+
+            <!-- Tools -->
+            <div>
+              <h4 class="text-sm font-medium text-white/80 mb-3">可用工具</h4>
+              <div class="flex flex-wrap gap-2">
+                {#each selectedAgent.tools as tool}
+                  <span class="px-3 py-1.5 rounded-xl bg-white/5 text-white/70 text-sm">{tool}</span>
+                {/each}
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div>
+              <h4 class="text-sm font-medium text-white/80 mb-3">核心功能</h4>
+              <ul class="space-y-2">
+                {#each selectedAgent.features as feature}
+                  <li class="flex items-center gap-2 text-white/70 text-sm">
+                    <CheckCircle2 class="w-4 h-4 text-green-400 shrink-0" />
+                    {feature}
+                  </li>
+                {/each}
+              </ul>
+            </div>
+
+            <!-- Example -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-sm font-medium text-white/80">示例用法</h4>
+                <button
+                  class="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                  onclick={() => copyToClipboard(selectedAgent?.example || '', 'agent-example')}
+                >
+                  {#if copiedId === 'agent-example'}
+                    <Check class="w-4 h-4 text-green-400" />
+                  {:else}
+                    <Copy class="w-4 h-4 text-white/40" />
+                  {/if}
+                </button>
+              </div>
+              <pre class="p-4 rounded-2xl bg-black/30 text-sm text-white/70 font-mono overflow-x-auto whitespace-pre-wrap"><code>{selectedAgent.example}</code></pre>
+            </div>
+
+            <!-- Agent Definition -->
+            <div>
+              <h4 class="text-sm font-medium text-white/80 mb-3">Agent 定义格式</h4>
+              <pre class="p-4 rounded-2xl bg-black/30 text-sm text-white/60 font-mono overflow-x-auto"><code>{`---
+name: ${selectedAgent.name}
+description: ${selectedAgent.description}
+tools: ${selectedAgent.tools.join(', ')}
+model: ${selectedAgent.model}
+---
+
+You are a ${selectedAgent.name} specialist...`}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
   </section>
 
   <!-- Commands -->
