@@ -20,7 +20,21 @@
     Lightbulb,
     BookOpen,
     ArrowLeft,
+    Terminal,
+    Sparkles,
   } from "lucide-svelte";
+
+  // Featured resources
+  const featuredResources = [
+    {
+      title: "Everything Claude Code",
+      description: "完整的 Claude Code 配置生态系统 - Agents、Skills、Hooks、Commands",
+      href: "/knowledge/everything-claude-code",
+      icon: Terminal,
+      gradient: "linear-gradient(135deg, rgba(139,92,246,0.4) 0%, rgba(59,130,246,0.2) 100%)",
+      tags: ["Claude Code", "AI 工具", "配置"],
+    },
+  ];
 
   // Form state
   let showAddDialog = $state(false);
@@ -94,6 +108,43 @@
       添加知识
     </Button>
   </div>
+
+  <!-- Featured Resources -->
+  {#if featuredResources.length > 0}
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+        <Sparkles class="w-5 h-5 text-yellow-400" />
+        精选资源
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {#each featuredResources as resource}
+          {@const Icon = resource.icon}
+          <a
+            href={resource.href}
+            class="group p-6 rounded-3xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02]"
+            style="background: {resource.gradient}"
+          >
+            <div class="flex items-start gap-4">
+              <div class="p-3 rounded-2xl bg-white/10">
+                <Icon class="w-6 h-6 text-white" />
+              </div>
+              <div class="flex-1">
+                <h3 class="font-semibold text-white group-hover:text-violet-400 transition-colors">
+                  {resource.title}
+                </h3>
+                <p class="text-sm text-white/50 mt-1">{resource.description}</p>
+                <div class="flex flex-wrap gap-1 mt-3">
+                  {#each resource.tags as tag}
+                    <span class="px-2 py-0.5 rounded-full text-xs bg-white/10 text-white/60">{tag}</span>
+                  {/each}
+                </div>
+              </div>
+            </div>
+          </a>
+        {/each}
+      </div>
+    </section>
+  {/if}
 
   <!-- Filters -->
   <div class="flex flex-wrap items-center gap-4">
