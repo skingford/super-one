@@ -5,7 +5,7 @@
   import Button from '$components/ui/Button.svelte';
   import Textarea from '$components/ui/Textarea.svelte';
   import Toast from '$components/ui/Toast.svelte';
-  import { formatJson, formatJsonWithRepair, minifyJson, validateJson, getJsonStats, repairJson } from '$utils/json';
+  import { formatJson, formatJsonWithRepair, minifyJson, minifyJsonWithRepair, validateJson, getJsonStats, repairJson } from '$utils/json';
   import { copyToClipboard } from '$utils/clipboard';
 
   hljs.registerLanguage('json', json);
@@ -57,13 +57,16 @@
   }
 
   function handleMinify() {
-    const result = minifyJson(input);
+    const result = autoRepair
+      ? minifyJsonWithRepair(input)
+      : minifyJson(input);
+
     if (result.success && result.formatted) {
       output = result.formatted;
       error = '';
       stats = getJsonStats(result.data);
-      wasRepaired = false;
-      showNotification('Minified successfully');
+      wasRepaired = result.repaired ?? false;
+      showNotification(result.repaired ? 'Minified & Repaired!' : 'Minified successfully');
     } else {
       error = result.error || 'Invalid JSON';
       output = '';
@@ -257,7 +260,7 @@
         </span>
         <span class="flex items-center gap-1.5">
           <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
-          Bare strings
+          Unquoted values
         </span>
       </div>
     </div>
