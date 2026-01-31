@@ -1,0 +1,33 @@
+{
+  "name": "@super-one/learn",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@super-one/utils": "workspace:*",
+    "bits-ui": "^1.3.5",
+    "clsx": "^2.1.1",
+    "lucide-svelte": "^0.469.0",
+    "mode-watcher": "^0.5.1",
+    "tailwind-merge": "^3.0.2",
+    "tailwind-variants": "^0.3.1",
+    "idb-keyval": "^6.2.1"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^4.0.0",
+    "@sveltejs/kit": "^2.16.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tailwindcss/vite": "^4.0.17",
+    "svelte": "^5.20.2",
+    "svelte-check": "^4.1.4",
+    "tailwindcss": "^4.0.17",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0"
+  }
+}
