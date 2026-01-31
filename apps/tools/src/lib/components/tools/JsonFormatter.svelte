@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Copy, Check, Braces, Minimize2, FileCheck, Trash2, Download } from 'lucide-svelte';
+  import { Copy, Braces, Minimize2, FileCheck, Trash2, Download, Wrench, Sparkles } from 'lucide-svelte';
   import hljs from 'highlight.js/lib/core';
   import json from 'highlight.js/lib/languages/json';
   import Button from '$components/ui/Button.svelte';
   import Textarea from '$components/ui/Textarea.svelte';
   import Toast from '$components/ui/Toast.svelte';
-  import { formatJson, minifyJson, validateJson, getJsonStats } from '$utils/json';
+  import { formatJson, formatJsonWithRepair, minifyJson, validateJson, getJsonStats, repairJson } from '$utils/json';
   import { copyToClipboard } from '$utils/clipboard';
 
   hljs.registerLanguage('json', json);
@@ -18,6 +18,8 @@
   let toastMessage = $state('');
   let toastType = $state<'success' | 'error'>('success');
   let indentSize = $state(2);
+  let autoRepair = $state(true);
+  let wasRepaired = $state(false);
 
   function showNotification(message: string, type: 'success' | 'error' = 'success') {
     toastMessage = message;
@@ -26,16 +28,31 @@
   }
 
   function handleFormat() {
-    const result = formatJson(input, indentSize);
+    const result = autoRepair
+      ? formatJsonWithRepair(input, indentSize)
+      : formatJson(input, indentSize);
+
     if (result.success && result.formatted) {
       output = result.formatted;
       error = '';
       stats = getJsonStats(result.data);
-      showNotification('Formatted successfully');
+      wasRepaired = result.repaired ?? false;
+      showNotification(result.repaired ? 'Formatted & Repaired!' : 'Formatted successfully');
     } else {
       error = result.error || 'Invalid JSON';
       output = '';
       stats = null;
+      wasRepaired = false;
+    }
+  }
+
+  function handleRepairOnly() {
+    try {
+      const repaired = repairJson(input);
+      input = repaired;
+      showNotification('Input repaired - click Format to see result');
+    } catch {
+      showNotification('Could not repair input', 'error');
     }
   }
 
@@ -45,11 +62,13 @@
       output = result.formatted;
       error = '';
       stats = getJsonStats(result.data);
+      wasRepaired = false;
       showNotification('Minified successfully');
     } else {
       error = result.error || 'Invalid JSON';
       output = '';
       stats = null;
+      wasRepaired = false;
     }
   }
 
@@ -58,10 +77,12 @@
     if (result.success) {
       error = '';
       stats = getJsonStats(result.data);
+      wasRepaired = false;
       showNotification('Valid JSON!');
     } else {
       error = result.error || 'Invalid JSON';
       stats = null;
+      wasRepaired = false;
       showNotification('Invalid JSON', 'error');
     }
   }
@@ -71,6 +92,7 @@
     output = '';
     error = '';
     stats = null;
+    wasRepaired = false;
   }
 
   async function handleCopy() {
@@ -105,39 +127,86 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
   <!-- Input Panel -->
   <div class="space-y-4">
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-4">
       <h3 class="font-mono font-semibold text-sm text-[var(--color-text-muted)] uppercase tracking-wider">
         Input
       </h3>
-      <select
-        bind:value={indentSize}
-        class="
-          h-8 px-2
-          bg-[var(--color-surface-elevated)]
-          border border-[var(--color-border)]
-          rounded-[var(--radius-sm)]
-          font-mono text-xs
-          text-[var(--color-text)]
-          focus:outline-none focus:border-[var(--color-accent)]
-        "
-      >
-        <option value={2}>2 spaces</option>
-        <option value={4}>4 spaces</option>
-        <option value={1}>1 tab</option>
-      </select>
+      <div class="flex items-center gap-3">
+        <!-- Auto Repair Toggle -->
+        <label class="flex items-center gap-2 cursor-pointer group">
+          <div class="relative">
+            <input
+              type="checkbox"
+              bind:checked={autoRepair}
+              class="sr-only peer"
+            />
+            <div
+              class="
+                w-9 h-5
+                bg-[var(--color-surface-elevated)]
+                border border-[var(--color-border)]
+                rounded-full
+                peer-checked:bg-[var(--color-accent)]
+                peer-checked:border-[var(--color-accent)]
+                transition-colors duration-200
+              "
+            ></div>
+            <div
+              class="
+                absolute top-0.5 left-0.5
+                w-4 h-4
+                bg-[var(--color-text-subtle)]
+                rounded-full
+                peer-checked:translate-x-4
+                peer-checked:bg-[var(--color-background)]
+                transition-all duration-200
+              "
+            ></div>
+          </div>
+          <span class="font-mono text-xs text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
+            Auto-fix
+          </span>
+        </label>
+
+        <select
+          bind:value={indentSize}
+          class="
+            h-8 px-2
+            bg-[var(--color-surface-elevated)]
+            border border-[var(--color-border)]
+            rounded-[var(--radius-sm)]
+            font-mono text-xs
+            text-[var(--color-text)]
+            focus:outline-none focus:border-[var(--color-accent)]
+          "
+        >
+          <option value={2}>2 spaces</option>
+          <option value={4}>4 spaces</option>
+          <option value={1}>1 tab</option>
+        </select>
+      </div>
     </div>
 
     <Textarea
       bind:value={input}
-      placeholder={'{"paste": "your JSON here"}'}
+      placeholder={"Paste JSON, or try:\n• 'hello' (single quotes)\n• {name: 'test'} (unquoted keys)\n• [1, 2, 3,] (trailing comma)"}
       rows={20}
     />
 
     <!-- Action Buttons -->
     <div class="flex flex-wrap gap-2">
       <Button onclick={handleFormat}>
-        <Braces size={16} />
-        Format
+        {#if autoRepair}
+          <Sparkles size={16} />
+          Format & Fix
+        {:else}
+          <Braces size={16} />
+          Format
+        {/if}
+      </Button>
+      <Button variant="secondary" onclick={handleRepairOnly}>
+        <Wrench size={16} />
+        Repair
       </Button>
       <Button variant="secondary" onclick={handleMinify}>
         <Minimize2 size={16} />
@@ -152,14 +221,70 @@
         Clear
       </Button>
     </div>
+
+    <!-- Repair Help -->
+    <div
+      class="
+        p-3
+        bg-[var(--color-surface-elevated)]
+        border border-[var(--color-border-subtle)]
+        rounded-[var(--radius-md)]
+      "
+    >
+      <p class="font-mono text-xs font-medium text-[var(--color-text-muted)] mb-2">
+        Auto-fix supports:
+      </p>
+      <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--color-text-subtle)]">
+        <span class="flex items-center gap-1.5">
+          <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
+          Single quotes → double
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
+          Unquoted keys
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
+          Trailing commas
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
+          Comments removal
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
+          Python None/True/False
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1 h-1 rounded-full bg-[var(--color-accent)]"></span>
+          Bare strings
+        </span>
+      </div>
+    </div>
   </div>
 
   <!-- Output Panel -->
   <div class="space-y-4">
     <div class="flex items-center justify-between">
-      <h3 class="font-mono font-semibold text-sm text-[var(--color-text-muted)] uppercase tracking-wider">
-        Output
-      </h3>
+      <div class="flex items-center gap-3">
+        <h3 class="font-mono font-semibold text-sm text-[var(--color-text-muted)] uppercase tracking-wider">
+          Output
+        </h3>
+        {#if wasRepaired}
+          <span
+            class="
+              px-2 py-0.5
+              font-mono text-xs font-medium
+              bg-[var(--color-success)]/10
+              text-[var(--color-success)]
+              border border-[var(--color-success)]/30
+              rounded-full
+            "
+          >
+            Repaired
+          </span>
+        {/if}
+      </div>
       {#if stats}
         <div class="flex items-center gap-4 font-mono text-xs text-[var(--color-text-subtle)]">
           <span><span class="text-[var(--color-accent)]">{stats.keys}</span> keys</span>
@@ -180,7 +305,7 @@
           p-6
         "
       >
-        <div class="text-center">
+        <div class="text-center max-w-sm">
           <div
             class="
               w-12 h-12 mx-auto mb-4
@@ -192,7 +317,12 @@
           >
             <Braces size={24} />
           </div>
-          <p class="font-mono text-sm text-[var(--color-danger)]">{error}</p>
+          <p class="font-mono text-sm text-[var(--color-danger)] mb-3">{error}</p>
+          {#if !autoRepair}
+            <p class="text-xs text-[var(--color-text-subtle)]">
+              Try enabling "Auto-fix" to repair malformed JSON
+            </p>
+          {/if}
         </div>
       </div>
     {:else if output}
