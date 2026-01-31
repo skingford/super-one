@@ -1,10 +1,6 @@
 <script lang="ts">
-import { tools } from "$stores/tools";
+import { tools, getIcon } from "$config";
 import {
-	Braces,
-	QrCode,
-	ScanLine,
-	Box,
 	ArrowRight,
 	Sparkles,
 	Plus,
@@ -12,19 +8,6 @@ import {
 	Shield,
 	Moon,
 } from "lucide-svelte";
-
-const iconMap = {
-	Braces,
-	QrCode,
-	ScanLine,
-	Box,
-} as const;
-
-type IconName = keyof typeof iconMap;
-
-function getIcon(iconName: string) {
-	return iconMap[iconName as IconName] ?? Box;
-}
 </script>
 
 <svelte:head>

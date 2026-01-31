@@ -1,8 +1,7 @@
 <script lang="ts">
 import "../app.css";
-import Header from "$components/layout/Header.svelte";
-import Sidebar from "$components/layout/Sidebar.svelte";
-import { theme } from "$stores/theme";
+import { Header, Sidebar } from "$components";
+import { theme } from "$stores";
 import { onMount } from "svelte";
 import type { Snippet } from "svelte";
 

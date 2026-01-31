@@ -138,5 +138,9 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# plugins
 .omc/
 .gemini/
+
+# build static files
+build

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Braces } from "lucide-svelte";
-import JsonFormatter from "$components/tools/JsonFormatter.svelte";
+import { JsonFormatter } from "$components";
 </script>
 
 <svelte:head>

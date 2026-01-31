@@ -1,26 +1,8 @@
 <script lang="ts">
 import { page } from "$app/stores";
-import { tools } from "$stores/tools";
-import { Braces, QrCode, ScanLine, Box } from "lucide-svelte";
+import { tools, getIcon } from "$config";
 
-let currentPath = $state("/");
-
-page.subscribe((value) => {
-	currentPath = value.url.pathname;
-});
-
-const iconMap = {
-	Braces,
-	QrCode,
-	ScanLine,
-	Box,
-} as const;
-
-type IconName = keyof typeof iconMap;
-
-function getIcon(iconName: string) {
-	return iconMap[iconName as IconName] ?? Box;
-}
+let currentPath = $derived($page.url.pathname);
 </script>
 
 <aside

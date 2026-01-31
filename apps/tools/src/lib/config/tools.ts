@@ -38,10 +38,14 @@ export const tools: Tool[] = [
   },
 ];
 
-export const getToolById = (id: string): Tool | undefined => {
+export function getToolById(id: string): Tool | undefined {
   return tools.find((tool) => tool.id === id);
-};
+}
 
-export const getToolsByCategory = (category: Tool["category"]): Tool[] => {
+export function getToolsByCategory(category: Tool["category"]): Tool[] {
   return tools.filter((tool) => tool.category === category);
-};
+}
+
+export function getToolByPath(path: string): Tool | undefined {
+  return tools.find((tool) => tool.path === path);
+}

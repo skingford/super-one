@@ -1,12 +1,6 @@
 <script lang="ts">
 import { Sun, Moon, Wrench, Github } from "lucide-svelte";
-import { theme } from "$stores/theme";
-
-let currentTheme = $state<"light" | "dark">("dark");
-
-theme.subscribe((value) => {
-	currentTheme = value;
-});
+import { theme } from "$stores";
 </script>
 
 <header
@@ -71,7 +65,7 @@ theme.subscribe((value) => {
         transition-all duration-200
       "
     >
-      {#if currentTheme === 'dark'}
+      {#if theme.current === 'dark'}
         <Sun size={20} />
       {:else}
         <Moon size={20} />
