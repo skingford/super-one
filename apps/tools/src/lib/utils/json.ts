@@ -319,15 +319,68 @@ function findNextNonWhitespace(tokens: Token[], index: number): Token | null {
 }
 
 /**
+ * Remove comments from JSON-like string while respecting string boundaries
+ */
+function removeComments(input: string): string {
+  let result = "";
+  let i = 0;
+  let inString = false;
+  let stringChar = "";
+
+  while (i < input.length) {
+    const char = input[i];
+    const nextChar = input[i + 1];
+
+    // Handle string boundaries
+    if ((char === '"' || char === "'") && (i === 0 || input[i - 1] !== "\\")) {
+      if (!inString) {
+        inString = true;
+        stringChar = char;
+      } else if (char === stringChar) {
+        inString = false;
+      }
+      result += char;
+      i++;
+      continue;
+    }
+
+    // Skip comments only when not in a string
+    if (!inString) {
+      // Single-line comment
+      if (char === "/" && nextChar === "/") {
+        // Skip until end of line
+        while (i < input.length && input[i] !== "\n") {
+          i++;
+        }
+        continue;
+      }
+      // Multi-line comment
+      if (char === "/" && nextChar === "*") {
+        i += 2; // Skip /*
+        while (i < input.length - 1 && !(input[i] === "*" && input[i + 1] === "/")) {
+          i++;
+        }
+        i += 2; // Skip */
+        continue;
+      }
+    }
+
+    result += char;
+    i++;
+  }
+
+  return result;
+}
+
+/**
  * Attempt to repair malformed JSON using token-based parsing
  * Handles: single quotes, unquoted keys AND values, trailing commas, comments, etc.
  */
 export function repairJson(input: string): string {
   let result = input.trim();
 
-  // Remove JavaScript-style comments first
-  result = result.replace(/\/\/.*$/gm, ""); // Single-line comments
-  result = result.replace(/\/\*[\s\S]*?\*\//g, ""); // Multi-line comments
+  // Remove JavaScript-style comments while respecting strings
+  result = removeComments(result).trim();
 
   // Handle bare words - wrap with array/object if needed
   if (!/^[[{"]/.test(result) && !/^-?\d/.test(result) && !/^(true|false|null)$/i.test(result)) {
