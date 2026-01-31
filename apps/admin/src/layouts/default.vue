@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import {
-  Odometer,
-  User,
-  Document,
-  Setting,
-  Expand,
-  Fold,
-} from "@element-plus/icons-vue";
+import { Odometer, User, Document, Setting, Expand, Fold } from "@element-plus/icons-vue";
 
 const route = useRoute();
 const isCollapse = ref(false);

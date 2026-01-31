@@ -46,7 +46,12 @@ function tokenize(input: string): Token[] {
     if (/\s/.test(char)) {
       const start = i;
       while (i < input.length && /\s/.test(input[i])) i++;
-      tokens.push({ type: "whitespace", value: input.slice(start, i), start, end: i });
+      tokens.push({
+        type: "whitespace",
+        value: input.slice(start, i),
+        start,
+        end: i,
+      });
       continue;
     }
 
@@ -96,7 +101,12 @@ function tokenize(input: string): Token[] {
           i++;
         }
       }
-      tokens.push({ type: "string", value: input.slice(start, i), start, end: i });
+      tokens.push({
+        type: "string",
+        value: input.slice(start, i),
+        start,
+        end: i,
+      });
       continue;
     }
 
@@ -136,7 +146,12 @@ function tokenize(input: string): Token[] {
           if (input[i] === "+" || input[i] === "-") i++;
           while (i < input.length && /\d/.test(input[i])) i++;
         }
-        tokens.push({ type: "number", value: input.slice(start, i), start, end: i });
+        tokens.push({
+          type: "number",
+          value: input.slice(start, i),
+          start,
+          end: i,
+        });
         continue;
       }
       // Not a valid number, treat as identifier
@@ -183,7 +198,6 @@ function rebuildJson(tokens: Token[]): string {
 
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i];
-    const prevNonWs = findPrevNonWhitespace(tokens, i);
     const nextNonWs = findNextNonWhitespace(tokens, i);
 
     switch (token.type) {
@@ -300,15 +314,6 @@ function rebuildJson(tokens: Token[]): string {
   return result;
 }
 
-function findPrevNonWhitespace(tokens: Token[], index: number): Token | null {
-  for (let i = index - 1; i >= 0; i--) {
-    if (tokens[i].type !== "whitespace") {
-      return tokens[i];
-    }
-  }
-  return null;
-}
-
 function findNextNonWhitespace(tokens: Token[], index: number): Token | null {
   for (let i = index + 1; i < tokens.length; i++) {
     if (tokens[i].type !== "whitespace") {
@@ -399,44 +404,6 @@ export function repairJson(input: string): string {
 
   // Fix trailing commas in arrays and objects
   result = result.replace(/,(\s*[}\]])/g, "$1");
-
-  return result;
-}
-
-/**
- * Replace single quotes with double quotes (legacy - now handled by tokenizer)
- */
-function replaceSingleQuotes(input: string): string {
-  let result = "";
-  let inDoubleQuote = false;
-  let inSingleQuote = false;
-  let i = 0;
-
-  while (i < input.length) {
-    const char = input[i];
-    const prevChar = i > 0 ? input[i - 1] : "";
-
-    if (char === '"' && prevChar !== "\\") {
-      if (!inSingleQuote) {
-        inDoubleQuote = !inDoubleQuote;
-      }
-      result += char;
-    } else if (char === "'" && prevChar !== "\\") {
-      if (!inDoubleQuote) {
-        inSingleQuote = !inSingleQuote;
-        result += '"'; // Replace single quote with double quote
-      } else {
-        result += char;
-      }
-    } else if (char === "\\" && inSingleQuote && input[i + 1] === "'") {
-      // Convert escaped single quote to escaped double quote
-      result += '\\"';
-      i++; // Skip the next character
-    } else {
-      result += char;
-    }
-    i++;
-  }
 
   return result;
 }
@@ -574,7 +541,11 @@ export function validateJson(input: string): JsonResult {
   return parseJson(input);
 }
 
-export function getJsonStats(data: unknown): { keys: number; depth: number; size: string } {
+export function getJsonStats(data: unknown): {
+  keys: number;
+  depth: number;
+  size: string;
+} {
   let keys = 0;
   let maxDepth = 0;
 

@@ -1,37 +1,37 @@
 <script lang="ts">
-  import { Check, X, AlertCircle } from 'lucide-svelte';
+import { Check, X, AlertCircle } from "lucide-svelte";
 
-  interface Props {
-    message: string;
-    type?: 'success' | 'error' | 'info';
-    visible?: boolean;
-    ondismiss?: () => void;
-  }
+interface Props {
+	message: string;
+	type?: "success" | "error" | "info";
+	visible?: boolean;
+	ondismiss?: () => void;
+}
 
-  let { message, type = 'success', visible = false, ondismiss }: Props = $props();
+let { message, type = "success", visible = false, ondismiss }: Props = $props();
 
-  const icons = {
-    success: Check,
-    error: X,
-    info: AlertCircle
-  } as const;
+const icons = {
+	success: Check,
+	error: X,
+	info: AlertCircle,
+} as const;
 
-  const colors = {
-    success: 'bg-[var(--color-success)]',
-    error: 'bg-[var(--color-danger)]',
-    info: 'bg-[var(--color-accent)]'
-  } as const;
+const colors = {
+	success: "bg-[var(--color-success)]",
+	error: "bg-[var(--color-danger)]",
+	info: "bg-[var(--color-accent)]",
+} as const;
 
-  $effect(() => {
-    if (visible) {
-      const timer = setTimeout(() => {
-        ondismiss?.();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  });
+$effect(() => {
+	if (visible) {
+		const timer = setTimeout(() => {
+			ondismiss?.();
+		}, 3000);
+		return () => clearTimeout(timer);
+	}
+});
 
-  let Icon = $derived(icons[type]);
+let Icon = $derived(icons[type]);
 </script>
 
 {#if visible}

@@ -5,10 +5,34 @@ const searchQuery = ref("");
 const dialogVisible = ref(false);
 
 const users = ref([
-  { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", status: "Active" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Editor", status: "Active" },
-  { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Viewer", status: "Inactive" },
-  { id: 4, name: "Alice Brown", email: "alice@example.com", role: "Editor", status: "Active" },
+  {
+    id: 1,
+    name: "John Doe",
+    email: "john@example.com",
+    role: "Admin",
+    status: "Active",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "jane@example.com",
+    role: "Editor",
+    status: "Active",
+  },
+  {
+    id: 3,
+    name: "Bob Johnson",
+    email: "bob@example.com",
+    role: "Viewer",
+    status: "Inactive",
+  },
+  {
+    id: 4,
+    name: "Alice Brown",
+    email: "alice@example.com",
+    role: "Editor",
+    status: "Active",
+  },
 ]);
 
 const handleEdit = (row: (typeof users.value)[0]) => {

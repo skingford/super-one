@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { ScanLine } from 'lucide-svelte';
-  import QrParser from '$components/tools/QrParser.svelte';
+import { ScanLine } from "lucide-svelte";
+import QrParser from "$components/tools/QrParser.svelte";
 </script>
 
 <svelte:head>

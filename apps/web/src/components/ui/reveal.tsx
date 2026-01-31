@@ -103,13 +103,7 @@ export function StaggerContainer({
   );
 }
 
-export function StaggerItem({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {

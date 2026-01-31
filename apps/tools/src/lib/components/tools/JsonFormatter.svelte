@@ -1,130 +1,155 @@
 <script lang="ts">
-  import { Copy, Braces, Minimize2, FileCheck, Trash2, Download, Wrench, Sparkles } from 'lucide-svelte';
-  import hljs from 'highlight.js/lib/core';
-  import json from 'highlight.js/lib/languages/json';
-  import Button from '$components/ui/Button.svelte';
-  import Textarea from '$components/ui/Textarea.svelte';
-  import Toast from '$components/ui/Toast.svelte';
-  import { formatJson, formatJsonWithRepair, minifyJson, minifyJsonWithRepair, validateJson, getJsonStats, repairJson } from '$utils/json';
-  import { copyToClipboard } from '$utils/clipboard';
+import {
+	Copy,
+	Braces,
+	Minimize2,
+	FileCheck,
+	Trash2,
+	Download,
+	Wrench,
+	Sparkles,
+} from "lucide-svelte";
+import hljs from "highlight.js/lib/core";
+import json from "highlight.js/lib/languages/json";
+import Button from "$components/ui/Button.svelte";
+import Textarea from "$components/ui/Textarea.svelte";
+import Toast from "$components/ui/Toast.svelte";
+import {
+	formatJson,
+	formatJsonWithRepair,
+	minifyJson,
+	minifyJsonWithRepair,
+	validateJson,
+	getJsonStats,
+	repairJson,
+} from "$utils/json";
+import { copyToClipboard } from "$utils/clipboard";
 
-  hljs.registerLanguage('json', json);
+hljs.registerLanguage("json", json);
 
-  let input = $state('');
-  let output = $state('');
-  let error = $state('');
-  let stats = $state<{ keys: number; depth: number; size: string } | null>(null);
-  let showToast = $state(false);
-  let toastMessage = $state('');
-  let toastType = $state<'success' | 'error'>('success');
-  let indentSize = $state(2);
-  let autoRepair = $state(true);
-  let wasRepaired = $state(false);
+let input = $state("");
+let output = $state("");
+let error = $state("");
+let stats = $state<{ keys: number; depth: number; size: string } | null>(null);
+let showToast = $state(false);
+let toastMessage = $state("");
+let toastType = $state<"success" | "error">("success");
+let indentSize = $state(2);
+let autoRepair = $state(true);
+let wasRepaired = $state(false);
 
-  function showNotification(message: string, type: 'success' | 'error' = 'success') {
-    toastMessage = message;
-    toastType = type;
-    showToast = true;
-  }
+function showNotification(
+	message: string,
+	type: "success" | "error" = "success",
+) {
+	toastMessage = message;
+	toastType = type;
+	showToast = true;
+}
 
-  function handleFormat() {
-    const result = autoRepair
-      ? formatJsonWithRepair(input, indentSize)
-      : formatJson(input, indentSize);
+function handleFormat() {
+	const result = autoRepair
+		? formatJsonWithRepair(input, indentSize)
+		: formatJson(input, indentSize);
 
-    if (result.success && result.formatted) {
-      output = result.formatted;
-      error = '';
-      stats = getJsonStats(result.data);
-      wasRepaired = result.repaired ?? false;
-      showNotification(result.repaired ? 'Formatted & Repaired!' : 'Formatted successfully');
-    } else {
-      error = result.error || 'Invalid JSON';
-      output = '';
-      stats = null;
-      wasRepaired = false;
-    }
-  }
+	if (result.success && result.formatted) {
+		output = result.formatted;
+		error = "";
+		stats = getJsonStats(result.data);
+		wasRepaired = result.repaired ?? false;
+		showNotification(
+			result.repaired ? "Formatted & Repaired!" : "Formatted successfully",
+		);
+	} else {
+		error = result.error || "Invalid JSON";
+		output = "";
+		stats = null;
+		wasRepaired = false;
+	}
+}
 
-  function handleRepairOnly() {
-    try {
-      const repaired = repairJson(input);
-      input = repaired;
-      showNotification('Input repaired - click Format to see result');
-    } catch {
-      showNotification('Could not repair input', 'error');
-    }
-  }
+function handleRepairOnly() {
+	try {
+		const repaired = repairJson(input);
+		input = repaired;
+		showNotification("Input repaired - click Format to see result");
+	} catch {
+		showNotification("Could not repair input", "error");
+	}
+}
 
-  function handleMinify() {
-    const result = autoRepair
-      ? minifyJsonWithRepair(input)
-      : minifyJson(input);
+function handleMinify() {
+	const result = autoRepair ? minifyJsonWithRepair(input) : minifyJson(input);
 
-    if (result.success && result.formatted) {
-      output = result.formatted;
-      error = '';
-      stats = getJsonStats(result.data);
-      wasRepaired = result.repaired ?? false;
-      showNotification(result.repaired ? 'Minified & Repaired!' : 'Minified successfully');
-    } else {
-      error = result.error || 'Invalid JSON';
-      output = '';
-      stats = null;
-      wasRepaired = false;
-    }
-  }
+	if (result.success && result.formatted) {
+		output = result.formatted;
+		error = "";
+		stats = getJsonStats(result.data);
+		wasRepaired = result.repaired ?? false;
+		showNotification(
+			result.repaired ? "Minified & Repaired!" : "Minified successfully",
+		);
+	} else {
+		error = result.error || "Invalid JSON";
+		output = "";
+		stats = null;
+		wasRepaired = false;
+	}
+}
 
-  function handleValidate() {
-    const result = validateJson(input);
-    if (result.success) {
-      error = '';
-      stats = getJsonStats(result.data);
-      wasRepaired = false;
-      showNotification('Valid JSON!');
-    } else {
-      error = result.error || 'Invalid JSON';
-      stats = null;
-      wasRepaired = false;
-      showNotification('Invalid JSON', 'error');
-    }
-  }
+function handleValidate() {
+	const result = validateJson(input);
+	if (result.success) {
+		error = "";
+		stats = getJsonStats(result.data);
+		wasRepaired = false;
+		showNotification("Valid JSON!");
+	} else {
+		error = result.error || "Invalid JSON";
+		stats = null;
+		wasRepaired = false;
+		showNotification("Invalid JSON", "error");
+	}
+}
 
-  function handleClear() {
-    input = '';
-    output = '';
-    error = '';
-    stats = null;
-    wasRepaired = false;
-  }
+function handleClear() {
+	input = "";
+	output = "";
+	error = "";
+	stats = null;
+	wasRepaired = false;
+}
 
-  async function handleCopy() {
-    if (output) {
-      const success = await copyToClipboard(output);
-      showNotification(success ? 'Copied to clipboard' : 'Failed to copy', success ? 'success' : 'error');
-    }
-  }
+async function handleCopy() {
+	if (output) {
+		const success = await copyToClipboard(output);
+		showNotification(
+			success ? "Copied to clipboard" : "Failed to copy",
+			success ? "success" : "error",
+		);
+	}
+}
 
-  function handleDownload() {
-    if (!output) return;
-    const blob = new Blob([output], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'formatted.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    showNotification('Downloaded');
-  }
+function handleDownload() {
+	if (!output) return;
+	const blob = new Blob([output], { type: "application/json" });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = "formatted.json";
+	a.click();
+	URL.revokeObjectURL(url);
+	showNotification("Downloaded");
+}
 
-  let highlightedOutput = $derived.by(() => {
-    if (!output) return '';
-    try {
-      return hljs.highlight(output, { language: 'json' }).value;
-    } catch {
-      return output;
-    }
-  });
+let highlightedOutput = $derived.by(() => {
+	if (!output) return "";
+	try {
+		return hljs.highlight(output, { language: "json" }).value;
+	} catch {
+		return output;
+	}
+});
 </script>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

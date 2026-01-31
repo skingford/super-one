@@ -1,23 +1,23 @@
 <script lang="ts">
-  interface Props {
-    value?: string;
-    placeholder?: string;
-    rows?: number;
-    readonly?: boolean;
-    monospace?: boolean;
-    class?: string;
-    oninput?: (e: Event) => void;
-  }
+interface Props {
+	value?: string;
+	placeholder?: string;
+	rows?: number;
+	readonly?: boolean;
+	monospace?: boolean;
+	class?: string;
+	oninput?: (e: Event) => void;
+}
 
-  let {
-    value = $bindable(''),
-    placeholder = '',
-    rows = 10,
-    readonly = false,
-    monospace = true,
-    class: className = '',
-    oninput
-  }: Props = $props();
+let {
+	value = $bindable(""),
+	placeholder = "",
+	rows = 10,
+	readonly = false,
+	monospace = true,
+	class: className = "",
+	oninput,
+}: Props = $props();
 </script>
 
 <textarea

@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
+import type { Snippet } from "svelte";
 
-  interface Props {
-    class?: string;
-    hover?: boolean;
-    children: Snippet;
-  }
+interface Props {
+	class?: string;
+	hover?: boolean;
+	children: Snippet;
+}
 
-  let { class: className = '', hover = false, children }: Props = $props();
+let { class: className = "", hover = false, children }: Props = $props();
 </script>
 
 <div

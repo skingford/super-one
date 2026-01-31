@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { QrCode } from 'lucide-svelte';
-  import QrGenerator from '$components/tools/QrGenerator.svelte';
+import { QrCode } from "lucide-svelte";
+import QrGenerator from "$components/tools/QrGenerator.svelte";
 </script>
 
 <svelte:head>

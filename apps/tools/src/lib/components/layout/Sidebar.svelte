@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import { tools } from '$stores/tools';
-  import { Braces, QrCode, ScanLine, Box } from 'lucide-svelte';
+import { page } from "$app/stores";
+import { tools } from "$stores/tools";
+import { Braces, QrCode, ScanLine, Box } from "lucide-svelte";
 
-  let currentPath = $state('/');
+let currentPath = $state("/");
 
-  page.subscribe((value) => {
-    currentPath = value.url.pathname;
-  });
+page.subscribe((value) => {
+	currentPath = value.url.pathname;
+});
 
-  const iconMap = {
-    Braces,
-    QrCode,
-    ScanLine,
-    Box
-  } as const;
+const iconMap = {
+	Braces,
+	QrCode,
+	ScanLine,
+	Box,
+} as const;
 
-  type IconName = keyof typeof iconMap;
+type IconName = keyof typeof iconMap;
 
-  function getIcon(iconName: string) {
-    return iconMap[iconName as IconName] ?? Box;
-  }
+function getIcon(iconName: string) {
+	return iconMap[iconName as IconName] ?? Box;
+}
 </script>
 
 <aside

@@ -1,72 +1,72 @@
 <script lang="ts">
-  import { Copy, Check, ExternalLink, RefreshCw, ScanLine } from 'lucide-svelte';
-  import Button from '$components/ui/Button.svelte';
-  import FileUpload from '$components/ui/FileUpload.svelte';
-  import Toast from '$components/ui/Toast.svelte';
-  import { parseQRCode } from '$utils/qrcode';
-  import { copyToClipboard } from '$utils/clipboard';
+import { Copy, Check, ExternalLink, RefreshCw, ScanLine } from "lucide-svelte";
+import Button from "$components/ui/Button.svelte";
+import FileUpload from "$components/ui/FileUpload.svelte";
+import Toast from "$components/ui/Toast.svelte";
+import { parseQRCode } from "$utils/qrcode";
+import { copyToClipboard } from "$utils/clipboard";
 
-  let isParsing = $state(false);
-  let result = $state('');
-  let error = $state('');
-  let uploadedImage = $state('');
-  let showToast = $state(false);
-  let toastMessage = $state('');
-  let toastType = $state<'success' | 'error'>('success');
+let isParsing = $state(false);
+let result = $state("");
+let error = $state("");
+let uploadedImage = $state("");
+let showToast = $state(false);
+let toastMessage = $state("");
+let toastType = $state<"success" | "error">("success");
 
-  async function handleFile(file: File) {
-    isParsing = true;
-    error = '';
-    result = '';
+async function handleFile(file: File) {
+	isParsing = true;
+	error = "";
+	result = "";
 
-    // Show preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedImage = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+	// Show preview
+	const reader = new FileReader();
+	reader.onload = (e) => {
+		uploadedImage = e.target?.result as string;
+	};
+	reader.readAsDataURL(file);
 
-    // Parse QR
-    const parseResult = await parseQRCode(file);
+	// Parse QR
+	const parseResult = await parseQRCode(file);
 
-    if (parseResult.success && parseResult.data) {
-      result = parseResult.data;
-      toastMessage = 'QR code decoded!';
-      toastType = 'success';
-      showToast = true;
-    } else {
-      error = parseResult.error || 'Failed to parse QR code';
-      toastMessage = error;
-      toastType = 'error';
-      showToast = true;
-    }
+	if (parseResult.success && parseResult.data) {
+		result = parseResult.data;
+		toastMessage = "QR code decoded!";
+		toastType = "success";
+		showToast = true;
+	} else {
+		error = parseResult.error || "Failed to parse QR code";
+		toastMessage = error;
+		toastType = "error";
+		showToast = true;
+	}
 
-    isParsing = false;
-  }
+	isParsing = false;
+}
 
-  async function handleCopy() {
-    if (result) {
-      await copyToClipboard(result);
-      toastMessage = 'Copied to clipboard';
-      toastType = 'success';
-      showToast = true;
-    }
-  }
+async function handleCopy() {
+	if (result) {
+		await copyToClipboard(result);
+		toastMessage = "Copied to clipboard";
+		toastType = "success";
+		showToast = true;
+	}
+}
 
-  function handleReset() {
-    result = '';
-    error = '';
-    uploadedImage = '';
-  }
+function handleReset() {
+	result = "";
+	error = "";
+	uploadedImage = "";
+}
 
-  function isUrl(text: string): boolean {
-    try {
-      new URL(text);
-      return true;
-    } catch {
-      return false;
-    }
-  }
+function isUrl(text: string): boolean {
+	try {
+		new URL(text);
+		return true;
+	} catch {
+		return false;
+	}
+}
 </script>
 
 <div class="max-w-2xl mx-auto space-y-8">

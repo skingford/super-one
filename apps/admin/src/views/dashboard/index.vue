@@ -2,10 +2,34 @@
 import { TrendCharts, User, Document, View } from "@element-plus/icons-vue";
 
 const stats = [
-  { title: "Total Users", value: "1,234", icon: User, color: "#409EFF", change: "+12%" },
-  { title: "Total Content", value: "567", icon: Document, color: "#67C23A", change: "+8%" },
-  { title: "Page Views", value: "89,012", icon: View, color: "#E6A23C", change: "+24%" },
-  { title: "Revenue", value: "$12,345", icon: TrendCharts, color: "#F56C6C", change: "+15%" },
+  {
+    title: "Total Users",
+    value: "1,234",
+    icon: User,
+    color: "#409EFF",
+    change: "+12%",
+  },
+  {
+    title: "Total Content",
+    value: "567",
+    icon: Document,
+    color: "#67C23A",
+    change: "+8%",
+  },
+  {
+    title: "Page Views",
+    value: "89,012",
+    icon: View,
+    color: "#E6A23C",
+    change: "+24%",
+  },
+  {
+    title: "Revenue",
+    value: "$12,345",
+    icon: TrendCharts,
+    color: "#F56C6C",
+    change: "+15%",
+  },
 ];
 
 const recentActivities = [

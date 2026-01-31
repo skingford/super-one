@@ -1,87 +1,92 @@
 <script lang="ts">
-  import { Download, Copy, RefreshCw } from 'lucide-svelte';
-  import Button from '$components/ui/Button.svelte';
-  import Input from '$components/ui/Input.svelte';
-  import Toast from '$components/ui/Toast.svelte';
-  import { generateQRCode, generateQRCodeSVG, downloadQRCode, downloadSVG } from '$utils/qrcode';
-  import { copyToClipboard } from '$utils/clipboard';
+import { Download, Copy, RefreshCw } from "lucide-svelte";
+import Button from "$components/ui/Button.svelte";
+import Input from "$components/ui/Input.svelte";
+import Toast from "$components/ui/Toast.svelte";
+import {
+	generateQRCode,
+	generateQRCodeSVG,
+	downloadQRCode,
+	downloadSVG,
+} from "$utils/qrcode";
+import { copyToClipboard } from "$utils/clipboard";
 
-  let text = $state('https://example.com');
-  let qrDataUrl = $state('');
-  let qrSvg = $state('');
-  let isGenerating = $state(false);
-  let showToast = $state(false);
-  let toastMessage = $state('');
+let text = $state("https://example.com");
+let qrDataUrl = $state("");
+let qrSvg = $state("");
+let isGenerating = $state(false);
+let showToast = $state(false);
+let toastMessage = $state("");
 
-  // Options
-  let size = $state(256);
-  let darkColor = $state('#000000');
-  let lightColor = $state('#ffffff');
-  let errorLevel = $state<'L' | 'M' | 'Q' | 'H'>('M');
+// Options
+let size = $state(256);
+let darkColor = $state("#000000");
+let lightColor = $state("#ffffff");
+let errorLevel = $state<"L" | "M" | "Q" | "H">("M");
 
-  const sizes = [128, 256, 512, 1024];
-  const errorLevels = [
-    { value: 'L', label: 'Low (7%)' },
-    { value: 'M', label: 'Medium (15%)' },
-    { value: 'Q', label: 'Quartile (25%)' },
-    { value: 'H', label: 'High (30%)' }
-  ];
+const sizes = [128, 256, 512, 1024];
+const errorLevels = [
+	{ value: "L", label: "Low (7%)" },
+	{ value: "M", label: "Medium (15%)" },
+	{ value: "Q", label: "Quartile (25%)" },
+	{ value: "H", label: "High (30%)" },
+];
 
-  async function generate() {
-    if (!text.trim()) return;
+async function generate() {
+	if (!text.trim()) return;
 
-    isGenerating = true;
-    try {
-      const [dataUrl, svg] = await Promise.all([
-        generateQRCode(text, {
-          width: size,
-          color: { dark: darkColor, light: lightColor },
-          errorCorrectionLevel: errorLevel
-        }),
-        generateQRCodeSVG(text, {
-          width: size,
-          color: { dark: darkColor, light: lightColor },
-          errorCorrectionLevel: errorLevel
-        })
-      ]);
-      qrDataUrl = dataUrl;
-      qrSvg = svg;
-    } catch (e) {
-      toastMessage = (e as Error).message;
-      showToast = true;
-    } finally {
-      isGenerating = false;
-    }
-  }
+	isGenerating = true;
+	try {
+		const [dataUrl, svg] = await Promise.all([
+			generateQRCode(text, {
+				width: size,
+				color: { dark: darkColor, light: lightColor },
+				errorCorrectionLevel: errorLevel,
+			}),
+			generateQRCodeSVG(text, {
+				width: size,
+				color: { dark: darkColor, light: lightColor },
+				errorCorrectionLevel: errorLevel,
+			}),
+		]);
+		qrDataUrl = dataUrl;
+		qrSvg = svg;
+	} catch (e) {
+		toastMessage = (e as Error).message;
+		showToast = true;
+	} finally {
+		isGenerating = false;
+	}
+}
 
-  function handleDownloadPng() {
-    if (qrDataUrl) {
-      downloadQRCode(qrDataUrl, 'qrcode.png');
-      toastMessage = 'Downloaded PNG';
-      showToast = true;
-    }
-  }
+function handleDownloadPng() {
+	if (qrDataUrl) {
+		downloadQRCode(qrDataUrl, "qrcode.png");
+		toastMessage = "Downloaded PNG";
+		showToast = true;
+	}
+}
 
-  function handleDownloadSvg() {
-    if (qrSvg) {
-      downloadSVG(qrSvg, 'qrcode.svg');
-      toastMessage = 'Downloaded SVG';
-      showToast = true;
-    }
-  }
+function handleDownloadSvg() {
+	if (qrSvg) {
+		downloadSVG(qrSvg, "qrcode.svg");
+		toastMessage = "Downloaded SVG";
+		showToast = true;
+	}
+}
 
-  async function handleCopyDataUrl() {
-    if (qrDataUrl) {
-      await copyToClipboard(qrDataUrl);
-      toastMessage = 'Copied data URL';
-      showToast = true;
-    }
-  }
+async function handleCopyDataUrl() {
+	if (qrDataUrl) {
+		await copyToClipboard(qrDataUrl);
+		toastMessage = "Copied data URL";
+		showToast = true;
+	}
+}
 
-  // Auto-generate on mount
-  $effect(() => {
-    generate();
-  });
+// Auto-generate on mount
+$effect(() => {
+	generate();
+});
 </script>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

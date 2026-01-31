@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Sun, Moon, Wrench, Github } from 'lucide-svelte';
-  import { theme } from '$stores/theme';
+import { Sun, Moon, Wrench, Github } from "lucide-svelte";
+import { theme } from "$stores/theme";
 
-  let currentTheme = $state<'light' | 'dark'>('dark');
+let currentTheme = $state<"light" | "dark">("dark");
 
-  theme.subscribe((value) => {
-    currentTheme = value;
-  });
+theme.subscribe((value) => {
+	currentTheme = value;
+});
 </script>
 
 <header

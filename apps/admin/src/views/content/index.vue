@@ -4,10 +4,38 @@ import { Plus, Search, Edit, Delete, View } from "@element-plus/icons-vue";
 const searchQuery = ref("");
 
 const contents = ref([
-  { id: 1, title: "Getting Started Guide", type: "Article", author: "John Doe", status: "Published", date: "2024-01-15" },
-  { id: 2, title: "Product Features", type: "Page", author: "Jane Smith", status: "Draft", date: "2024-01-14" },
-  { id: 3, title: "Company News", type: "Article", author: "Bob Johnson", status: "Published", date: "2024-01-13" },
-  { id: 4, title: "FAQ Section", type: "Page", author: "Alice Brown", status: "Review", date: "2024-01-12" },
+  {
+    id: 1,
+    title: "Getting Started Guide",
+    type: "Article",
+    author: "John Doe",
+    status: "Published",
+    date: "2024-01-15",
+  },
+  {
+    id: 2,
+    title: "Product Features",
+    type: "Page",
+    author: "Jane Smith",
+    status: "Draft",
+    date: "2024-01-14",
+  },
+  {
+    id: 3,
+    title: "Company News",
+    type: "Article",
+    author: "Bob Johnson",
+    status: "Published",
+    date: "2024-01-13",
+  },
+  {
+    id: 4,
+    title: "FAQ Section",
+    type: "Page",
+    author: "Alice Brown",
+    status: "Review",
+    date: "2024-01-12",
+  },
 ]);
 </script>
 

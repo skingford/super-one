@@ -44,6 +44,7 @@ declare global {
   const getActivePinia: typeof import("pinia")["getActivePinia"];
   const getCurrentInstance: typeof import("vue")["getCurrentInstance"];
   const getCurrentScope: typeof import("vue")["getCurrentScope"];
+  const getCurrentWatcher: typeof import("vue").getCurrentWatcher;
   const h: typeof import("vue")["h"];
   const ignorableWatch: typeof import("@vueuse/core")["ignorableWatch"];
   const inject: typeof import("vue")["inject"];
@@ -53,6 +54,7 @@ declare global {
   const isReactive: typeof import("vue")["isReactive"];
   const isReadonly: typeof import("vue")["isReadonly"];
   const isRef: typeof import("vue")["isRef"];
+  const isShallow: typeof import("vue").isShallow;
   const makeDestructurable: typeof import("@vueuse/core")["makeDestructurable"];
   const mapActions: typeof import("pinia")["mapActions"];
   const mapGetters: typeof import("pinia")["mapGetters"];
@@ -96,6 +98,7 @@ declare global {
   const refAutoReset: typeof import("@vueuse/core")["refAutoReset"];
   const refDebounced: typeof import("@vueuse/core")["refDebounced"];
   const refDefault: typeof import("@vueuse/core")["refDefault"];
+  const refManualReset: typeof import("@vueuse/core").refManualReset;
   const refThrottled: typeof import("@vueuse/core")["refThrottled"];
   const refWithControl: typeof import("@vueuse/core")["refWithControl"];
   const resolveComponent: typeof import("vue")["resolveComponent"];
@@ -158,6 +161,7 @@ declare global {
   const useCountdown: typeof import("@vueuse/core")["useCountdown"];
   const useCounter: typeof import("@vueuse/core")["useCounter"];
   const useCssModule: typeof import("vue")["useCssModule"];
+  const useCssSupports: typeof import("@vueuse/core").useCssSupports;
   const useCssVar: typeof import("@vueuse/core")["useCssVar"];
   const useCssVars: typeof import("vue")["useCssVars"];
   const useCurrentElement: typeof import("@vueuse/core")["useCurrentElement"];
@@ -236,9 +240,7 @@ declare global {
   const usePreferredDark: typeof import("@vueuse/core")["usePreferredDark"];
   const usePreferredLanguages: typeof import("@vueuse/core")["usePreferredLanguages"];
   const usePreferredReducedMotion: typeof import("@vueuse/core")["usePreferredReducedMotion"];
-  const usePreferredReducedTransparency: typeof import(
-    "@vueuse/core"
-  )["usePreferredReducedTransparency"];
+  const usePreferredReducedTransparency: typeof import("@vueuse/core")["usePreferredReducedTransparency"];
   const usePrevious: typeof import("@vueuse/core")["usePrevious"];
   const useRafFn: typeof import("@vueuse/core")["useRafFn"];
   const useRefHistory: typeof import("@vueuse/core")["useRefHistory"];
@@ -343,8 +345,6 @@ declare module "vue" {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import("vue")["EffectScope"]>;
-    readonly ElMessage: UnwrapRef<typeof import("element-plus/es")["ElMessage"]>;
-    readonly ElMessageBox: UnwrapRef<typeof import("element-plus/es")["ElMessageBox"]>;
     readonly acceptHMRUpdate: UnwrapRef<typeof import("pinia")["acceptHMRUpdate"]>;
     readonly asyncComputed: UnwrapRef<typeof import("@vueuse/core")["asyncComputed"]>;
     readonly autoResetRef: UnwrapRef<typeof import("@vueuse/core")["autoResetRef"]>;

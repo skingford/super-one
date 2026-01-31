@@ -1,47 +1,47 @@
 <script lang="ts">
-  import { Upload } from 'lucide-svelte';
+import { Upload } from "lucide-svelte";
 
-  interface Props {
-    accept?: string;
-    onfile?: (file: File) => void;
-    class?: string;
-  }
+interface Props {
+	accept?: string;
+	onfile?: (file: File) => void;
+	class?: string;
+}
 
-  let { accept = 'image/*', onfile, class: className = '' }: Props = $props();
+let { accept = "image/*", onfile, class: className = "" }: Props = $props();
 
-  let isDragging = $state(false);
-  let inputEl: HTMLInputElement;
+let isDragging = $state(false);
+let inputEl: HTMLInputElement | null = null;
 
-  function handleDrop(e: DragEvent) {
-    e.preventDefault();
-    isDragging = false;
+function handleDrop(e: DragEvent) {
+	e.preventDefault();
+	isDragging = false;
 
-    const file = e.dataTransfer?.files[0];
-    if (file && onfile) {
-      onfile(file);
-    }
-  }
+	const file = e.dataTransfer?.files[0];
+	if (file && onfile) {
+		onfile(file);
+	}
+}
 
-  function handleDragOver(e: DragEvent) {
-    e.preventDefault();
-    isDragging = true;
-  }
+function handleDragOver(e: DragEvent) {
+	e.preventDefault();
+	isDragging = true;
+}
 
-  function handleDragLeave() {
-    isDragging = false;
-  }
+function handleDragLeave() {
+	isDragging = false;
+}
 
-  function handleFileSelect(e: Event) {
-    const input = e.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file && onfile) {
-      onfile(file);
-    }
-  }
+function handleFileSelect(e: Event) {
+	const input = e.target as HTMLInputElement;
+	const file = input.files?.[0];
+	if (file && onfile) {
+		onfile(file);
+	}
+}
 
-  function openFilePicker() {
-    inputEl?.click();
-  }
+function openFilePicker() {
+	inputEl?.click();
+}
 </script>
 
 <button

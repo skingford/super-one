@@ -1,21 +1,21 @@
 <script lang="ts">
-  interface Props {
-    type?: 'text' | 'number' | 'url' | 'email';
-    value?: string | number;
-    placeholder?: string;
-    disabled?: boolean;
-    class?: string;
-    oninput?: (e: Event) => void;
-  }
+interface Props {
+	type?: "text" | "number" | "url" | "email";
+	value?: string | number;
+	placeholder?: string;
+	disabled?: boolean;
+	class?: string;
+	oninput?: (e: Event) => void;
+}
 
-  let {
-    type = 'text',
-    value = $bindable(''),
-    placeholder = '',
-    disabled = false,
-    class: className = '',
-    oninput
-  }: Props = $props();
+let {
+	type = "text",
+	value = $bindable(""),
+	placeholder = "",
+	disabled = false,
+	class: className = "",
+	oninput,
+}: Props = $props();
 </script>
 
 <input
