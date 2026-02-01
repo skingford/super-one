@@ -1,4 +1,4 @@
-import { Braces, QrCode, ScanLine, Box, Clock } from "lucide-svelte";
+import { Braces, QrCode, ScanLine, Box, Clock, CaseSensitive } from "lucide-svelte";
 import type { ComponentType } from "svelte";
 
 export const iconMap = {
@@ -7,6 +7,7 @@ export const iconMap = {
   ScanLine,
   Box,
   Clock,
+  CaseSensitive,
 } as const;
 
 export type IconName = keyof typeof iconMap;

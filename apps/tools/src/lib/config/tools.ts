@@ -45,6 +45,15 @@ export const tools: Tool[] = [
     category: "convert",
     color: "#fbbf24",
   },
+  {
+    id: "string",
+    name: "String",
+    description: "Case conversion & formatting",
+    icon: "CaseSensitive",
+    path: "/string",
+    category: "convert",
+    color: "#06b6d4",
+  },
 ];
 
 export function getToolById(id: string): Tool | undefined {
