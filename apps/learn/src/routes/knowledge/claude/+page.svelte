@@ -650,7 +650,7 @@ allowed-tools:
   });
 </script>
 
-<div class="max-w-6xl mx-auto space-y-8 pb-12">
+<div class="max-w-5xl mx-auto lg:mr-[20rem] xl:mr-[24rem] space-y-8 pb-12 transition-all duration-300">
   <!-- Terminal-style Header -->
   <div class="relative">
     <!-- Scanline overlay -->
@@ -713,42 +713,56 @@ allowed-tools:
   </div>
 </div>
 
-<!-- Search and Navigation (Sticky Top, Full Width Breakout) -->
-<div class="sticky top-0 z-50 w-screen ml-[calc(50%-50vw)] border-b border-emerald-500/20 bg-[#0a0f0a]/90 backdrop-blur-xl supports-[backdrop-filter]:bg-[#0a0f0a]/60">
-  <div class="max-w-6xl mx-auto px-4 py-3">
-    <div class="flex items-center gap-4">
-      <div class="relative flex-1 max-w-md">
-        <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
-        <input
-          type="search"
-          placeholder="搜索模块..."
-          bind:value={searchQuery}
-          class="w-full h-11 pl-11 pr-4 rounded-xl bg-[#0a0f0a] border border-emerald-500/20 text-emerald-400 placeholder:text-emerald-400/30 font-mono focus:outline-none focus:border-emerald-500/50 transition-colors"
-        />
-      </div>
-      <div class="flex gap-2 overflow-x-auto scrollbar-thin pb-1">
-        {#each filteredSections as section}
-          {@const Icon = section.icon}
-          <a
-            href="#{section.id}"
-            class={cn(
-              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-mono whitespace-nowrap transition-all",
-              activeSection === section.id
-                ? "bg-emerald-500/20 text-emerald-400"
-                : "text-emerald-400/50 hover:text-emerald-400 hover:bg-emerald-500/10"
-            )}
-            onclick={() => (activeSection = section.id)}
-          >
-            <Icon class="w-4 h-4" />
-            {section.name}
-          </a>
-        {/each}
-      </div>
+<!-- Fixed Right Sidebar Navigation -->
+<aside class="hidden lg:flex flex-col fixed top-24 right-8 w-72 xl:w-80 h-[calc(100vh-8rem)] rounded-3xl bg-[#0a0f0a]/90 backdrop-blur-xl border border-emerald-500/20 overflow-hidden shadow-2xl z-40">
+  <!-- Search Header -->
+  <div class="p-5 border-b border-emerald-500/10 bg-emerald-500/5">
+    <div class="relative">
+      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+      <input
+        type="search"
+        placeholder="Search docs..."
+        bind:value={searchQuery}
+        class="w-full h-10 pl-9 pr-4 rounded-xl bg-[#0a0f0a] border border-emerald-500/20 text-emerald-400 placeholder:text-emerald-400/30 font-mono text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
+      />
     </div>
   </div>
-</div>
 
-<div class="max-w-6xl mx-auto space-y-8 pb-20 mt-8">
+  <!-- Navigation List -->
+  <div class="flex-1 overflow-y-auto p-3 space-y-1 scrollbar-thin">
+    <div class="px-3 py-2 text-xs font-bold text-emerald-400/40 uppercase tracking-wider font-mono">
+      Navigation
+    </div>
+    {#each filteredSections as section}
+      {@const Icon = section.icon}
+      <a
+        href="#{section.id}"
+        class={cn(
+          "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-mono transition-all group",
+          activeSection === section.id
+            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+            : "text-emerald-400/60 hover:text-emerald-400 hover:bg-emerald-500/5 border border-transparent"
+        )}
+        onclick={() => (activeSection = section.id)}
+      >
+        <div class={cn(
+          "p-1.5 rounded-lg transition-colors",
+          activeSection === section.id ? "bg-emerald-500/20 text-emerald-400" : "bg-black/20 text-emerald-400/40 group-hover:text-emerald-400"
+        )}>
+           <Icon class="w-3.5 h-3.5" />
+        </div>
+        {section.name}
+      </a>
+    {/each}
+  </div>
+
+  <!-- Quick Stats Footer -->
+  <div class="p-4 border-t border-emerald-500/10 bg-black/20 text-[10px] text-emerald-400/30 font-mono text-center">
+    Use <kbd class="px-1 py-0.5 rounded border border-emerald-500/20 bg-emerald-500/5 text-emerald-400/60">Cmd+K</kbd> to search
+  </div>
+</aside>
+
+<div class="max-w-5xl mx-auto lg:mr-[20rem] xl:mr-[24rem] space-y-8 pb-20 mt-8 transition-all duration-300">
   <!-- Section 1: Slash Commands -->
   <section id="commands" class="scroll-mt-32">
     <button

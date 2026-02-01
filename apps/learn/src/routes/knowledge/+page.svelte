@@ -17,34 +17,39 @@
     Link,
     Lightbulb,
     BookOpen,
-    ArrowLeft,
+    ArrowRight,
     Terminal,
     Sparkles,
     Filter,
-    FolderOpen
+    FolderOpen,
+    Cpu,
+    Zap,
+    LayoutGrid,
+    List
   } from "lucide-svelte";
+  import { fade, fly } from "svelte/transition";
 
-  // Featured resources
+  // Featured resources - Enhanced visual data
   const featuredResources = [
     {
       title: "Claude Code Manual",
-      description: "Official documentation: Commands, Agents, Skills & Hooks.",
+      description: "Complete command reference, agent capabilities, and hook system documentation.",
       href: "/knowledge/claude",
       icon: Terminal,
       color: "text-emerald-400",
-      bg: "bg-emerald-500/10",
-      border: "hover:border-emerald-500/50",
-      tags: ["Guide", "Official"],
+      gradient: "from-emerald-500/20 to-teal-500/5",
+      border: "group-hover:border-emerald-500/30",
+      tags: ["Official", "Reference"],
     },
     {
       title: "Everything Claude",
-      description: "Complete ecosystem: Agents, Skills, Hooks configuration.",
+      description: "Deep dive into the ecosystem: specialized agents, custom skills, and configuration patterns.",
       href: "/knowledge/everything-claude-code",
       icon: Sparkles,
       color: "text-violet-400",
-      bg: "bg-violet-500/10",
-      border: "hover:border-violet-500/50",
-      tags: ["Ecosystem", "Tools"],
+      gradient: "from-violet-500/20 to-fuchsia-500/5",
+      border: "group-hover:border-violet-500/30",
+      tags: ["Ecosystem", "Advanced"],
     },
   ];
 
@@ -60,6 +65,13 @@
     code: Code,
     resources: Link,
     ideas: Lightbulb,
+  };
+
+  const categoryColors: Record<string, string> = {
+    notes: "text-blue-400 bg-blue-500/10 border-blue-500/20",
+    code: "text-pink-400 bg-pink-500/10 border-pink-500/20",
+    resources: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+    ideas: "text-amber-400 bg-amber-500/10 border-amber-500/20",
   };
 
   async function handleAdd() {
@@ -94,236 +106,273 @@
   }
 </script>
 
-<div class="space-y-8 animate-fade-in">
-  <!-- Header Section -->
-  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-    <div>
-      <h1 class="text-3xl font-heading font-bold text-foreground">Knowledge Base</h1>
-      <p class="text-muted-foreground mt-1">Curate and evolve your personal learning nodes.</p>
-    </div>
-    <button 
-      onclick={() => (showAddDialog = true)}
-      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105"
-    >
-      <Plus size={18} />
-      <span>New Entry</span>
-    </button>
-  </div>
+<div class="space-y-12 animate-fade-in pb-20">
+  <!-- Hero / Header Section -->
+  <div class="relative">
+      <div class="absolute -top-20 -right-20 w-96 h-96 bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
+      
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
+        <div class="space-y-4 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-muted-foreground backdrop-blur-sm">
+             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+             Knowledge Graph Active
+          </div>
+          <h1 class="text-5xl md:text-6xl font-heading font-bold tracking-tight text-white">
+            Your Digital <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Cortex.</span>
+          </h1>
+          <p class="text-lg text-muted-foreground leading-relaxed max-w-xl">
+            Curate your personal knowledge nodes. Capture insights, code snippets, and resources in a unified neural network.
+          </p>
+        </div>
+        
+        <div class="flex gap-4">
+             <Button 
+              onclick={() => (showAddDialog = true)}
+              class="h-12 px-6 rounded-xl bg-white text-black font-bold hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all hover:scale-105 active:scale-95"
+            >
+              <Plus class="w-5 h-5 mr-2" />
+              New Node
+            </Button>
+        </div>
+      </div>
 
-  <!-- Featured Grid -->
-  {#if featuredResources.length > 0}
-    <div class="grid md:grid-cols-2 gap-6">
-      {#each featuredResources as resource}
-        {@const Icon = resource.icon}
-        <a
-          href={resource.href}
-          class="group relative p-6 rounded-3xl bg-slate-900/40 border border-border {resource.border} transition-all duration-300 hover:bg-slate-900/60 overflow-hidden"
-        >
-          <!-- Hover Gradient -->
-          <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          
-          <div class="relative flex items-start gap-4">
-            <div class="p-3 rounded-2xl {resource.bg}">
-              <Icon class="w-6 h-6 {resource.color}" />
-            </div>
-            <div class="flex-1">
-              <h3 class="font-bold text-lg text-foreground group-hover:text-white transition-colors">
-                {resource.title}
-              </h3>
-              <p class="text-sm text-muted-foreground mt-1 leading-relaxed">{resource.description}</p>
-              <div class="flex gap-2 mt-4">
-                {#each resource.tags as tag}
-                  <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-white/5 text-white/70 border border-white/5">{tag}</span>
-                {/each}
+    <!-- Featured Resources (Bento Style) -->
+    {#if featuredResources.length > 0}
+      <div class="grid md:grid-cols-2 gap-4 mb-16">
+        {#each featuredResources as resource}
+          {@const Icon = resource.icon}
+          <a
+            href={resource.href}
+            class="group relative p-8 rounded-[2rem] bg-slate-900/40 border border-white/5 {resource.border} transition-all duration-500 hover:bg-slate-900/60 overflow-hidden"
+          >
+            <!-- Background Gradient -->
+            <div class={`absolute inset-0 bg-gradient-to-br ${resource.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+            
+            <div class="relative z-10 flex flex-col h-full justify-between">
+              <div class="mb-8">
+                 <div class="flex items-center justify-between mb-4">
+                     <div class={`p-3 rounded-2xl bg-slate-950/50 border border-white/5 ${resource.color}`}>
+                        <Icon size={24} />
+                     </div>
+                     <ArrowRight class={`w-5 h-5 ${resource.color} opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300`} />
+                 </div>
+                 
+                <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/70 transition-colors">
+                  {resource.title}
+                </h3>
+                 <p class="text-muted-foreground leading-relaxed group-hover:text-slate-300 transition-colors">
+                    {resource.description}
+                 </p>
+              </div>
+              
+              <div class="flex gap-2">
+                 {#each resource.tags as tag}
+                    <span class="px-2.5 py-1 rounded-md text-xs font-mono bg-black/40 border border-white/5 text-slate-400 group-hover:border-white/10 transition-colors">{tag}</span>
+                 {/each}
               </div>
             </div>
-            <div class="p-2 rounded-full hover:bg-white/10 text-muted-foreground group-hover:text-foreground transition-colors self-start -mr-2 -mt-2">
-                <ArrowLeft class="w-5 h-5 rotate-180" />
-            </div>
-          </div>
-        </a>
-      {/each}
-    </div>
-  {/if}
-
-  <!-- Search & Filter Toolkit -->
-  <div class="sticky top-20 z-30 p-2 rounded-2xl bg-background/80 backdrop-blur-xl border border-border shadow-sm flex flex-col md:flex-row gap-2">
-    <!-- Search -->
-    <div class="relative flex-1">
-      <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <input
-        type="search"
-        placeholder="Search nodes..."
-        bind:value={knowledgeStore.searchQuery}
-        class="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-900/50 border border-transparent focus:bg-slate-900 focus:border-primary/30 text-sm transition-all focus:outline-none focus:ring-0"
-      />
-    </div>
-
-    <!-- Filters -->
-    <div class="flex items-center gap-1 overflow-x-auto no-scrollbar px-1">
-      <button
-        onclick={() => (knowledgeStore.selectedCategory = null)}
-        class={cn(
-          "px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
-          !knowledgeStore.selectedCategory
-            ? "bg-foreground text-background"
-            : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-        )}
-      >
-        All
-      </button>
-      {#each knowledgeStore.categories as cat}
-        {@const Icon = categoryIcons[cat.id] || FileText}
-        <button
-          onclick={() => (knowledgeStore.selectedCategory = cat.id)}
-          class={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
-            knowledgeStore.selectedCategory === cat.id
-              ? "bg-white/10 text-white border border-white/10"
-              : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-          )}
-        >
-          <Icon class="w-3.5 h-3.5" />
-          {cat.name}
-        </button>
-      {/each}
-    </div>
+          </a>
+        {/each}
+      </div>
+    {/if}
   </div>
 
-  <!-- Content Grid -->
+  <!-- Search & Filter Bar (Floating Glass) -->
+  <div class="sticky top-8 z-30 mx-auto max-w-4xl">
+      <div class="p-1.5 rounded-2xl bg-[#0a0f0a]/80 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50 flex flex-col sm:flex-row gap-2 transition-all duration-300 focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20">
+        <!-- Main Search -->
+        <div class="relative flex-1">
+          <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            type="search"
+            placeholder="Search nodes, tags, or content..."
+            bind:value={knowledgeStore.searchQuery}
+            class="w-full h-11 pl-11 pr-4 rounded-xl bg-transparent text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:bg-white/5 transition-colors"
+          />
+        </div>
+
+        <div class="w-px h-8 bg-white/10 hidden sm:block self-center"></div>
+
+        <!-- Category Filters -->
+        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar px-1 py-1 sm:py-0">
+          <button
+            onclick={() => (knowledgeStore.selectedCategory = null)}
+            class={cn(
+              "px-4 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap",
+              !knowledgeStore.selectedCategory
+                ? "bg-white text-black shadow-lg shadow-white/10"
+                : "text-muted-foreground hover:text-white hover:bg-white/5"
+            )}
+          >
+            All
+          </button>
+          {#each knowledgeStore.categories as cat}
+             {@const Icon = categoryIcons[cat.id]}
+            <button
+              onclick={() => (knowledgeStore.selectedCategory = cat.id)}
+              class={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap border",
+                knowledgeStore.selectedCategory === cat.id
+                  ? "bg-slate-800 text-white border-slate-600 shadow-lg"
+                  : "border-transparent text-muted-foreground hover:text-white hover:bg-white/5"
+              )}
+            >
+              {#if Icon}
+                 <Icon size={12} />
+              {/if}
+              {cat.name}
+            </button>
+          {/each}
+        </div>
+      </div>
+  </div>
+
+  <!-- Content Grid (Masonry effect using columns) -->
   {#if knowledgeStore.isLoading}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each Array(6) as _}
-        <div class="h-48 rounded-3xl bg-slate-900/30 animate-pulse"></div>
+        <div class="h-64 rounded-3xl bg-white/5 animate-pulse border border-white/5"></div>
       {/each}
     </div>
   {:else if knowledgeStore.filteredItems.length === 0}
-    <div class="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-border rounded-3xl bg-slate-900/20">
-      <div class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mb-4">
-        <FolderOpen class="w-8 h-8 text-muted-foreground" />
+    <div class="flex flex-col items-center justify-center py-32 text-center">
+      <div class="relative mb-6">
+          <div class="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
+          <div class="relative z-10 w-20 h-20 rounded-3xl bg-slate-900 border border-white/10 flex items-center justify-center">
+            <FolderOpen class="w-10 h-10 text-muted-foreground" />
+          </div>
       </div>
-      <h3 class="text-lg font-bold">No knowledge nodes found</h3>
-      <p class="text-muted-foreground mb-6 max-w-xs mx-auto">Start building your graph by adding a new entry.</p>
-      <Button onclick={() => (showAddDialog = true)} variant="outline">
+      <h3 class="text-xl font-bold text-white mb-2">No nodes found</h3>
+      <p class="text-muted-foreground mb-8 max-w-sm mx-auto">Your knowledge graph is empty for this query. Plant a new seed.</p>
+      <Button onclick={() => (showAddDialog = true)} variant="outline" class="border-white/10 hover:bg-white/5">
         <Plus class="w-4 h-4 mr-2" />
-        Add First Node
+        Create Node
       </Button>
     </div>
   {:else}
-    <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+    <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 [column-fill:_balance]">
       {#each knowledgeStore.filteredItems as item (item.id)}
         {@const Icon = categoryIcons[item.category] || FileText}
-        <a
-          href="/knowledge/{item.id}"
-          class="group block relative break-inside-avoid rounded-3xl bg-slate-900/40 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1"
-        >
-          <div class="p-6">
-            <!-- Header -->
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 rounded-xl bg-slate-800/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                        <Icon class="w-4 h-4" />
+        {@const colors = categoryColors[item.category] || categoryColors.notes}
+        
+        <div class="break-inside-avoid">
+             <a
+            href="/knowledge/{item.id}"
+            class="group block relative rounded-3xl bg-[#0F1115] border border-white/5 hover:border-white/10 transition-all duration-300 hover:shadow-2xl hover:shadow-black/50 hover:-translate-y-1 overflow-hidden"
+            >
+                <div class="p-6">
+                    <!-- Card Header -->
+                    <div class="flex items-start justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class={cn("p-2.5 rounded-xl transition-colors", colors)}>
+                                <Icon class="w-4 h-4" />
+                            </div>
+                            <div class="flex flex-col">
+                                <h3 class="font-bold text-slate-200 group-hover:text-white transition-colors">{item.title}</h3>
+                                <span class="text-[10px] font-mono text-slate-500 mt-0.5">{formatRelativeTime(item.updatedAt)}</span>
+                            </div>
+                        </div>
+                        
+                        {#if item.isPinned}
+                             <div class="p-1.5 rounded-lg bg-orange-500/10 text-orange-400">
+                                <Pin size={12} strokeWidth={3} />
+                             </div>
+                        {/if}
                     </div>
-                     <div>
-                        <h3 class="font-bold text-foreground text-sm group-hover:text-primary transition-colors line-clamp-1">{item.title}</h3>
-                        <p class="text-[10px] text-muted-foreground font-mono mt-0.5">{formatRelativeTime(item.updatedAt)}</p>
+
+                    <!-- Content Snippet -->
+                    <div class="relative">
+                         <p class="text-sm text-slate-400/80 leading-relaxed max-h-[160px] overflow-hidden group-hover:text-slate-300 transition-colors">
+                            {item.content}
+                         </p>
+                         <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#0F1115] to-transparent"></div>
+                    </div>
+
+                    <!-- Footer / Actions -->
+                    <div class="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+                        <div class="flex flex-wrap gap-1.5">
+                            {#each item.tags.slice(0, 3) as tag}
+                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-white/5 text-slate-400 group-hover:bg-white/10 transition-colors">#{tag}</span>
+                            {/each}
+                        </div>
+                        
+                         <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-x-4 group-hover:translate-x-0">
+                             <button
+                                 class="p-2 rounded-lg hover:bg-white/10 text-slate-500 hover:text-white transition-colors"
+                                 onclick={(e) => handleTogglePin(e, item.id)}
+                            >
+                                <Pin size={14} />
+                             </button>
+                             <button
+                                 class="p-2 rounded-lg hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-colors"
+                                 onclick={(e) => handleDelete(e, item.id)}
+                            >
+                                <Trash2 size={14} />
+                             </button>
+                         </div>
                     </div>
                 </div>
-                
-                {#if item.isPinned}
-                    <Pin class="w-3.5 h-3.5 text-secondary shrink-0" />
-                {/if}
-            </div>
-
-            <!-- Content Preview -->
-            <p class="text-sm text-muted-foreground line-clamp-4 leading-relaxed mb-4 font-normal">
-                {item.content}
-            </p>
-
-            <!-- Footer -->
-            <div class="flex items-center justify-between pt-4 border-t border-border/50">
-                <div class="flex flex-wrap gap-1">
-                    {#each item.tags.slice(0, 2) as tag}
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700/50">{tag}</span>
-                    {/each}
-                     {#if item.tags.length > 2}
-                        <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800 text-slate-500">+{item.tags.length - 2}</span>
-                    {/if}
-                </div>
-                
-                <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 duration-200">
-                    <button 
-                         class="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground"
-                         onclick={(e) => handleTogglePin(e, item.id)}
-                    >
-                        {#if item.isPinned}<PinOff size={14}/>{:else}<Pin size={14}/>{/if}
-                    </button>
-                    <button 
-                         class="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-destructive"
-                         onclick={(e) => handleDelete(e, item.id)}
-                    >
-                        <Trash2 size={14} />
-                    </button>
-                </div>
-            </div>
-          </div>
-        </a>
+            </a>
+        </div>
       {/each}
     </div>
   {/if}
 </div>
 
 <!-- Add Dialog (Using existing Dialog component) -->
-<Dialog bind:open={showAddDialog} title="New Knowledge Node" description="Add to your personal graph.">
-  <form onsubmit={(e) => { e.preventDefault(); handleAdd(); }} class="space-y-4">
-    <div class="space-y-1.5">
-      <label for="title" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Title</label>
-      <Input id="title" bind:value={newTitle} placeholder="e.g. React Patterns" required />
+<Dialog bind:open={showAddDialog} title="New Knowledge Node" description="Capture a new idea or resource.">
+  <form onsubmit={(e) => { e.preventDefault(); handleAdd(); }} class="space-y-6 py-2">
+    <div class="space-y-2">
+      <label for="title" class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Title</label>
+      <Input id="title" bind:value={newTitle} placeholder="e.g. Advanced Rust Lifetimes" required class="bg-slate-950/50 border-white/10 focus:border-primary/50" />
     </div>
 
-    <fieldset class="space-y-1.5">
-      <legend class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</legend>
-      <div class="grid grid-cols-4 gap-2">
+    <div class="space-y-2">
+      <label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Category</label>
+      <div class="grid grid-cols-4 gap-3">
         {#each knowledgeStore.categories as cat}
           {@const Icon = categoryIcons[cat.id] || FileText}
           <button
             type="button"
             class={cn(
-              "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-xs font-medium",
+              "flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all duration-300",
               newCategory === cat.id
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border bg-slate-900/50 text-muted-foreground hover:bg-slate-900 hover:border-slate-700"
+                ? "border-primary bg-primary/10 text-primary shadow-[0_0_15px_rgba(var(--primary),0.3)]"
+                : "border-white/5 bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-white"
             )}
             onclick={() => (newCategory = cat.id)}
           >
-            <Icon class="w-4 h-4" />
-            <span>{cat.name}</span>
+            <Icon size={20} />
+            <span class="text-xs font-medium mt-1">{cat.name}</span>
           </button>
         {/each}
       </div>
-    </fieldset>
+    </div>
 
-    <div class="space-y-1.5">
-      <label for="content" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Content</label>
+    <div class="space-y-2">
+      <label for="content" class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Content</label>
       <Textarea
         id="content"
         bind:value={newContent}
-        placeholder="Markdown supported..."
-        rows={6}
+        placeholder="Markdown content supported..."
+        rows={8}
         required
+        class="bg-slate-950/50 border-white/10 focus:border-primary/50 resize-none font-mono text-sm leading-relaxed"
       />
     </div>
 
-    <div class="space-y-1.5">
-      <label for="tags" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tags</label>
-      <Input id="tags" bind:value={newTags} placeholder="comma, separated" />
+    <div class="space-y-2">
+      <label for="tags" class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Tags</label>
+      <Input id="tags" bind:value={newTags} placeholder="comma, separated, tags" class="bg-slate-950/50 border-white/10 focus:border-primary/50" />
     </div>
   </form>
 
   {#snippet footer()}
-    <Button variant="ghost" onclick={() => (showAddDialog = false)}>Cancel</Button>
-    <Button onclick={handleAdd} disabled={!newTitle.trim() || !newContent.trim()}>
-      Create Node
-    </Button>
+    <div class="flex justify-end gap-3 pt-2">
+         <Button variant="ghost" onclick={() => (showAddDialog = false)} class="hover:bg-white/5">Cancel</Button>
+        <Button onclick={handleAdd} disabled={!newTitle.trim() || !newContent.trim()} class="bg-white text-black hover:bg-white/90 font-bold">
+        Create Node
+        </Button>
+    </div>
   {/snippet}
 </Dialog>
