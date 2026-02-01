@@ -1,9 +1,7 @@
 <script lang="ts">
   import { cn } from "$lib/utils/cn";
-  import BentoCard from "$lib/components/ui/BentoCard.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
-  import Badge from "$lib/components/ui/Badge.svelte";
   import Dialog from "$lib/components/ui/Dialog.svelte";
   import Textarea from "$lib/components/ui/Textarea.svelte";
   import { knowledgeStore } from "$lib/stores/knowledge.svelte";
@@ -22,25 +20,31 @@
     ArrowLeft,
     Terminal,
     Sparkles,
+    Filter,
+    FolderOpen
   } from "lucide-svelte";
 
   // Featured resources
   const featuredResources = [
     {
-      title: "Claude Code 完整知识手册",
-      description: "官方文档整理 - 命令、插件、代理、技能、钩子、权限、MCP 等核心功能",
+      title: "Claude Code Manual",
+      description: "Official documentation: Commands, Agents, Skills & Hooks.",
       href: "/knowledge/claude",
       icon: Terminal,
-      gradient: "linear-gradient(135deg, rgba(16,185,129,0.4) 0%, rgba(6,182,212,0.2) 100%)",
-      tags: ["Claude Code", "官方文档", "完整指南"],
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+      border: "hover:border-emerald-500/50",
+      tags: ["Guide", "Official"],
     },
     {
-      title: "Everything Claude Code",
-      description: "完整的 Claude Code 配置生态系统 - Agents、Skills、Hooks、Commands",
+      title: "Everything Claude",
+      description: "Complete ecosystem: Agents, Skills, Hooks configuration.",
       href: "/knowledge/everything-claude-code",
-      icon: Terminal,
-      gradient: "linear-gradient(135deg, rgba(139,92,246,0.4) 0%, rgba(59,130,246,0.2) 100%)",
-      tags: ["Claude Code", "AI 工具", "配置"],
+      icon: Sparkles,
+      color: "text-violet-400",
+      bg: "bg-violet-500/10",
+      border: "hover:border-violet-500/50",
+      tags: ["Ecosystem", "Tools"],
     },
   ];
 
@@ -51,19 +55,11 @@
   let newCategory = $state("notes");
   let newTags = $state("");
 
-  // Category icons mapping
   const categoryIcons: Record<string, any> = {
     notes: FileText,
     code: Code,
     resources: Link,
     ideas: Lightbulb,
-  };
-
-  const categoryGradients: Record<string, string> = {
-    notes: "linear-gradient(135deg, rgba(59,130,246,0.3) 0%, rgba(37,99,235,0.15) 100%)",
-    code: "linear-gradient(135deg, rgba(16,185,129,0.3) 0%, rgba(5,150,105,0.15) 100%)",
-    resources: "linear-gradient(135deg, rgba(139,92,246,0.3) 0%, rgba(124,58,237,0.15) 100%)",
-    ideas: "linear-gradient(135deg, rgba(245,158,11,0.3) 0%, rgba(217,119,6,0.15) 100%)",
   };
 
   async function handleAdd() {
@@ -73,10 +69,7 @@
       title: newTitle.trim(),
       content: newContent.trim(),
       category: newCategory,
-      tags: newTags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean),
+      tags: newTags.split(",").map((t) => t.trim()).filter(Boolean),
     });
 
     newTitle = "";
@@ -89,7 +82,7 @@
   async function handleDelete(e: MouseEvent, id: string) {
     e.preventDefault();
     e.stopPropagation();
-    if (confirm("确定要删除这条知识吗？")) {
+    if (confirm("Delete this item?")) {
       await knowledgeStore.delete(id);
     }
   }
@@ -101,179 +94,177 @@
   }
 </script>
 
-<div class="space-y-6">
-  <!-- Header -->
-  <div class="flex items-center gap-4 mb-8">
-    <a href="/" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-      <ArrowLeft class="w-5 h-5 text-white/60" />
-    </a>
-    <div class="flex-1">
-      <h1 class="text-3xl font-bold text-white">知识归档</h1>
-      <p class="text-white/50 mt-1">整理和管理你的学习笔记</p>
+<div class="space-y-8 animate-fade-in">
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-heading font-bold text-foreground">Knowledge Base</h1>
+      <p class="text-muted-foreground mt-1">Curate and evolve your personal learning nodes.</p>
     </div>
-    <Button onclick={() => (showAddDialog = true)}>
-      <Plus class="w-4 h-4" />
-      添加知识
-    </Button>
+    <button 
+      onclick={() => (showAddDialog = true)}
+      class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105"
+    >
+      <Plus size={18} />
+      <span>New Entry</span>
+    </button>
   </div>
 
-  <!-- Featured Resources -->
+  <!-- Featured Grid -->
   {#if featuredResources.length > 0}
-    <section class="mb-8">
-      <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-        <Sparkles class="w-5 h-5 text-yellow-400" />
-        精选资源
-      </h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each featuredResources as resource}
-          {@const Icon = resource.icon}
-          <a
-            href={resource.href}
-            class="group p-6 rounded-3xl border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02]"
-            style="background: {resource.gradient}"
-          >
-            <div class="flex items-start gap-4">
-              <div class="p-3 rounded-2xl bg-white/10">
-                <Icon class="w-6 h-6 text-white" />
-              </div>
-              <div class="flex-1">
-                <h3 class="font-semibold text-white group-hover:text-violet-400 transition-colors">
-                  {resource.title}
-                </h3>
-                <p class="text-sm text-white/50 mt-1">{resource.description}</p>
-                <div class="flex flex-wrap gap-1 mt-3">
-                  {#each resource.tags as tag}
-                    <span class="px-2 py-0.5 rounded-full text-xs bg-white/10 text-white/60">{tag}</span>
-                  {/each}
-                </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      {#each featuredResources as resource}
+        {@const Icon = resource.icon}
+        <a
+          href={resource.href}
+          class="group relative p-6 rounded-3xl bg-slate-900/40 border border-border {resource.border} transition-all duration-300 hover:bg-slate-900/60 overflow-hidden"
+        >
+          <!-- Hover Gradient -->
+          <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          
+          <div class="relative flex items-start gap-4">
+            <div class="p-3 rounded-2xl {resource.bg}">
+              <Icon class="w-6 h-6 {resource.color}" />
+            </div>
+            <div class="flex-1">
+              <h3 class="font-bold text-lg text-foreground group-hover:text-white transition-colors">
+                {resource.title}
+              </h3>
+              <p class="text-sm text-muted-foreground mt-1 leading-relaxed">{resource.description}</p>
+              <div class="flex gap-2 mt-4">
+                {#each resource.tags as tag}
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-white/5 text-white/70 border border-white/5">{tag}</span>
+                {/each}
               </div>
             </div>
-          </a>
-        {/each}
-      </div>
-    </section>
+            <div class="p-2 rounded-full hover:bg-white/10 text-muted-foreground group-hover:text-foreground transition-colors self-start -mr-2 -mt-2">
+                <ArrowLeft class="w-5 h-5 rotate-180" />
+            </div>
+          </div>
+        </a>
+      {/each}
+    </div>
   {/if}
 
-  <!-- Filters -->
-  <div class="flex flex-wrap items-center gap-4">
-    <div class="relative flex-1 min-w-[200px] max-w-md">
-      <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+  <!-- Search & Filter Toolkit -->
+  <div class="sticky top-20 z-30 p-2 rounded-2xl bg-background/80 backdrop-blur-xl border border-border shadow-sm flex flex-col md:flex-row gap-2">
+    <!-- Search -->
+    <div class="relative flex-1">
+      <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
       <input
         type="search"
-        placeholder="搜索知识..."
+        placeholder="Search nodes..."
         bind:value={knowledgeStore.searchQuery}
-        class="w-full h-12 pl-11 pr-4 rounded-2xl bg-white/5 border border-white/10 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+        class="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-900/50 border border-transparent focus:bg-slate-900 focus:border-primary/30 text-sm transition-all focus:outline-none focus:ring-0"
       />
     </div>
 
-    <div class="flex gap-2">
+    <!-- Filters -->
+    <div class="flex items-center gap-1 overflow-x-auto no-scrollbar px-1">
       <button
-        class={cn(
-          "px-4 py-2.5 rounded-xl text-sm font-medium transition-all",
-          !knowledgeStore.selectedCategory
-            ? "bg-white/10 text-white"
-            : "text-white/50 hover:text-white hover:bg-white/5"
-        )}
         onclick={() => (knowledgeStore.selectedCategory = null)}
+        class={cn(
+          "px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
+          !knowledgeStore.selectedCategory
+            ? "bg-foreground text-background"
+            : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+        )}
       >
-        全部
+        All
       </button>
       {#each knowledgeStore.categories as cat}
         {@const Icon = categoryIcons[cat.id] || FileText}
         <button
-          class={cn(
-            "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all",
-            knowledgeStore.selectedCategory === cat.id
-              ? "bg-white/10 text-white"
-              : "text-white/50 hover:text-white hover:bg-white/5"
-          )}
           onclick={() => (knowledgeStore.selectedCategory = cat.id)}
+          class={cn(
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap",
+            knowledgeStore.selectedCategory === cat.id
+              ? "bg-white/10 text-white border border-white/10"
+              : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+          )}
         >
-          <Icon class="w-4 h-4" />
+          <Icon class="w-3.5 h-3.5" />
           {cat.name}
         </button>
       {/each}
     </div>
   </div>
 
-  <!-- Knowledge Grid -->
+  <!-- Content Grid -->
   {#if knowledgeStore.isLoading}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each Array(6) as _}
-        <div class="h-48 rounded-3xl bg-white/5 animate-pulse"></div>
+        <div class="h-48 rounded-3xl bg-slate-900/30 animate-pulse"></div>
       {/each}
     </div>
   {:else if knowledgeStore.filteredItems.length === 0}
-    <BentoCard variant="glass" class="py-16 text-center">
-      <BookOpen class="w-16 h-16 text-white/20 mx-auto mb-4" />
-      <h3 class="text-xl font-semibold text-white mb-2">还没有知识条目</h3>
-      <p class="text-white/50 mb-6">开始记录你的学习内容</p>
-      <Button onclick={() => (showAddDialog = true)}>
-        <Plus class="w-4 h-4" />
-        添加第一条知识
+    <div class="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-border rounded-3xl bg-slate-900/20">
+      <div class="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mb-4">
+        <FolderOpen class="w-8 h-8 text-muted-foreground" />
+      </div>
+      <h3 class="text-lg font-bold">No knowledge nodes found</h3>
+      <p class="text-muted-foreground mb-6 max-w-xs mx-auto">Start building your graph by adding a new entry.</p>
+      <Button onclick={() => (showAddDialog = true)} variant="outline">
+        <Plus class="w-4 h-4 mr-2" />
+        Add First Node
       </Button>
-    </BentoCard>
+    </div>
   {:else}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
       {#each knowledgeStore.filteredItems as item (item.id)}
         {@const Icon = categoryIcons[item.category] || FileText}
         <a
           href="/knowledge/{item.id}"
-          class="group relative p-6 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all duration-300 hover:scale-[1.02]"
-          style="background: {categoryGradients[item.category] || categoryGradients.notes}"
+          class="group block relative break-inside-avoid rounded-3xl bg-slate-900/40 border border-border hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1"
         >
-          <!-- Pin indicator -->
-          {#if item.isPinned}
-            <div class="absolute top-4 right-4">
-              <Pin class="w-4 h-4 text-yellow-400" />
-            </div>
-          {/if}
-
-          <div class="flex items-start gap-3 mb-4">
-            <div class="p-2 rounded-xl bg-white/10">
-              <Icon class="w-5 h-5 text-white" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
-                {item.title}
-              </h3>
-              <p class="text-xs text-white/40 mt-0.5">
-                {formatRelativeTime(item.updatedAt)}
-              </p>
-            </div>
-          </div>
-
-          <p class="text-sm text-white/60 line-clamp-3 mb-4">{item.content}</p>
-
-          <div class="flex items-center justify-between">
-            <div class="flex flex-wrap gap-1">
-              {#each item.tags.slice(0, 2) as tag}
-                <span class="px-2 py-0.5 rounded-full text-xs bg-white/10 text-white/60">{tag}</span>
-              {/each}
-              {#if item.tags.length > 2}
-                <span class="px-2 py-0.5 rounded-full text-xs bg-white/5 text-white/40">+{item.tags.length - 2}</span>
-              {/if}
-            </div>
-
-            <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
-                class="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
-                onclick={(e) => handleTogglePin(e, item.id)}
-                title={item.isPinned ? "取消置顶" : "置顶"}
-              >
+          <div class="p-6">
+            <!-- Header -->
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-slate-800/50 text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                        <Icon class="w-4 h-4" />
+                    </div>
+                     <div>
+                        <h3 class="font-bold text-foreground text-sm group-hover:text-primary transition-colors line-clamp-1">{item.title}</h3>
+                        <p class="text-[10px] text-muted-foreground font-mono mt-0.5">{formatRelativeTime(item.updatedAt)}</p>
+                    </div>
+                </div>
+                
                 {#if item.isPinned}
-                  <PinOff class="w-4 h-4 text-yellow-400" />
-                {:else}
-                  <Pin class="w-4 h-4 text-white/40" />
+                    <Pin class="w-3.5 h-3.5 text-secondary shrink-0" />
                 {/if}
-              </button>
-              <button
-                class="p-1.5 rounded-lg hover:bg-red-500/20 transition-colors"
-                onclick={(e) => handleDelete(e, item.id)}
-                title="删除"
-              >
-                <Trash2 class="w-4 h-4 text-red-400" />
-              </button>
+            </div>
+
+            <!-- Content Preview -->
+            <p class="text-sm text-muted-foreground line-clamp-4 leading-relaxed mb-4 font-normal">
+                {item.content}
+            </p>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-between pt-4 border-t border-border/50">
+                <div class="flex flex-wrap gap-1">
+                    {#each item.tags.slice(0, 2) as tag}
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700/50">{tag}</span>
+                    {/each}
+                     {#if item.tags.length > 2}
+                        <span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-800 text-slate-500">+{item.tags.length - 2}</span>
+                    {/if}
+                </div>
+                
+                <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 duration-200">
+                    <button 
+                         class="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-foreground"
+                         onclick={(e) => handleTogglePin(e, item.id)}
+                    >
+                        {#if item.isPinned}<PinOff size={14}/>{:else}<Pin size={14}/>{/if}
+                    </button>
+                    <button 
+                         class="p-1.5 rounded-lg hover:bg-background text-muted-foreground hover:text-destructive"
+                         onclick={(e) => handleDelete(e, item.id)}
+                    >
+                        <Trash2 size={14} />
+                    </button>
+                </div>
             </div>
           </div>
         </a>
@@ -282,58 +273,57 @@
   {/if}
 </div>
 
-<!-- Add Dialog -->
-<Dialog bind:open={showAddDialog} title="添加知识" description="记录一条新的知识内容">
+<!-- Add Dialog (Using existing Dialog component) -->
+<Dialog bind:open={showAddDialog} title="New Knowledge Node" description="Add to your personal graph.">
   <form onsubmit={(e) => { e.preventDefault(); handleAdd(); }} class="space-y-4">
-    <div>
-      <label for="title" class="text-sm font-medium text-white/80 mb-1.5 block">标题</label>
-      <Input id="title" bind:value={newTitle} placeholder="输入标题..." required class="bg-white/5 border-white/10 text-white" />
+    <div class="space-y-1.5">
+      <label for="title" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Title</label>
+      <Input id="title" bind:value={newTitle} placeholder="e.g. React Patterns" required />
     </div>
 
-    <fieldset>
-      <legend class="text-sm font-medium text-white/80 mb-1.5 block">分类</legend>
+    <div class="space-y-1.5">
+      <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</label>
       <div class="grid grid-cols-4 gap-2">
         {#each knowledgeStore.categories as cat}
           {@const Icon = categoryIcons[cat.id] || FileText}
           <button
             type="button"
             class={cn(
-              "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
+              "flex flex-col items-center gap-2 p-3 rounded-xl border transition-all text-xs font-medium",
               newCategory === cat.id
-                ? "border-primary bg-primary/20 text-white"
-                : "border-white/10 text-white/60 hover:border-white/20 hover:bg-white/5"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border bg-slate-900/50 text-muted-foreground hover:bg-slate-900 hover:border-slate-700"
             )}
             onclick={() => (newCategory = cat.id)}
           >
-            <Icon class="w-5 h-5" />
-            <span class="text-xs">{cat.name}</span>
+            <Icon class="w-4 h-4" />
+            <span>{cat.name}</span>
           </button>
         {/each}
       </div>
-    </fieldset>
+    </div>
 
-    <div>
-      <label for="content" class="text-sm font-medium text-white/80 mb-1.5 block">内容</label>
+    <div class="space-y-1.5">
+      <label for="content" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Content</label>
       <Textarea
         id="content"
         bind:value={newContent}
-        placeholder="输入内容..."
+        placeholder="Markdown supported..."
         rows={6}
         required
-        class="bg-white/5 border-white/10 text-white"
       />
     </div>
 
-    <div>
-      <label for="tags" class="text-sm font-medium text-white/80 mb-1.5 block">标签</label>
-      <Input id="tags" bind:value={newTags} placeholder="用逗号分隔" class="bg-white/5 border-white/10 text-white" />
+    <div class="space-y-1.5">
+      <label for="tags" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tags</label>
+      <Input id="tags" bind:value={newTags} placeholder="comma, separated" />
     </div>
   </form>
 
   {#snippet footer()}
-    <Button variant="ghost" onclick={() => (showAddDialog = false)} class="text-white/60">取消</Button>
+    <Button variant="ghost" onclick={() => (showAddDialog = false)}>Cancel</Button>
     <Button onclick={handleAdd} disabled={!newTitle.trim() || !newContent.trim()}>
-      添加
+      Create Node
     </Button>
   {/snippet}
 </Dialog>
