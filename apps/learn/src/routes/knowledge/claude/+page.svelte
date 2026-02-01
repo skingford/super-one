@@ -56,12 +56,12 @@
       } else {
         clearInterval(interval);
       }
-    }, 80);
+    }, 50);
 
     // Cursor blink
     const cursorInterval = setInterval(() => {
       showCursor = !showCursor;
-    }, 530);
+    }, 800);
 
     return () => {
       clearInterval(interval);
@@ -650,7 +650,7 @@ allowed-tools:
   });
 </script>
 
-<div class="max-w-5xl mx-auto lg:mr-[20rem] xl:mr-[24rem] space-y-8 pb-12 transition-all duration-300">
+<div class="max-w-6xl mx-auto lg:mr-[20rem] xl:mr-[24rem] space-y-12 transition-all duration-300">
   <!-- Terminal-style Header -->
   <div class="relative">
     <!-- Scanline overlay -->
@@ -658,15 +658,15 @@ allowed-tools:
       <div class="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,0,0.03)_2px,rgba(0,255,0,0.03)_4px)]"></div>
     </div>
 
-    <div class="relative p-8 rounded-3xl bg-[#0a0f0a] border border-emerald-500/20 overflow-hidden">
+    <div class="relative p-8 rounded-3xl bg-[#0a0f0a] border border-violet-500/20 overflow-hidden">
       <!-- Glow effect -->
-      <div class="absolute -top-20 -right-20 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute -top-20 -right-20 w-60 h-60 bg-violet-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl"></div>
 
       <!-- Back button -->
       <a
         href="/knowledge"
-        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-sm hover:bg-emerald-500/20 transition-colors mb-6"
+        class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-violet-500/10 text-violet-400 text-sm hover:bg-violet-500/20 transition-colors mb-6"
       >
         <ArrowLeft class="w-4 h-4" />
         返回知识库
@@ -675,38 +675,45 @@ allowed-tools:
       <!-- Terminal prompt style title -->
       <div class="flex items-center gap-3 mb-4">
         <div class="flex gap-1.5">
-          <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-          <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-          <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
         </div>
-        <span class="text-emerald-400/60 font-mono text-sm">claude@docs ~ %</span>
+        <span class="text-violet-400/60 font-mono text-xs">claude@docs ~ %</span>
       </div>
 
-      <h1 class="text-4xl md:text-5xl font-bold text-white font-mono tracking-tight">
-        <span class="text-emerald-400">$</span> {displayTitle}<span class="text-emerald-400" class:opacity-100={showCursor} class:opacity-0={!showCursor}>▊</span>
+      <h1 class="text-2xl md:text-3xl font-bold text-violet-400 font-mono tracking-tight flex items-center">
+        <span class="text-violet-400 mr-2">$</span>
+        {displayTitle}
+        <span 
+          class="w-2 h-6 md:h-8 bg-violet-400/80 ml-1"
+          class:opacity-100={showCursor} 
+          class:opacity-0={!showCursor}
+          style="width: 2px;"
+        ></span>
       </h1>
 
-      <p class="text-emerald-400/60 mt-4 font-mono text-lg max-w-2xl">
+      <p class="text-violet-400/60 mt-4 font-mono text-sm md:text-base max-w-2xl leading-relaxed">
         {">"} 基于官方文档整理，涵盖命令、插件、代理、技能、钩子、权限等核心功能
       </p>
 
       <!-- Quick stats -->
       <div class="flex flex-wrap gap-4 mt-8">
-        <div class="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-          <span class="text-emerald-400 font-mono text-2xl font-bold">45+</span>
-          <span class="text-emerald-400/60 text-sm ml-2">内置命令</span>
+        <div class="px-3 py-1.5 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-baseline gap-2">
+          <span class="text-violet-400 font-mono text-lg font-bold">45+</span>
+          <span class="text-violet-400/60 text-xs">内置命令</span>
         </div>
-        <div class="px-4 py-2 rounded-xl bg-violet-500/10 border border-violet-500/20">
-          <span class="text-violet-400 font-mono text-2xl font-bold">10</span>
-          <span class="text-violet-400/60 text-sm ml-2">插件命令</span>
+        <div class="px-3 py-1.5 rounded-lg bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-baseline gap-2">
+          <span class="text-fuchsia-400 font-mono text-lg font-bold">10</span>
+          <span class="text-fuchsia-400/60 text-xs">插件命令</span>
         </div>
-        <div class="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
-          <span class="text-cyan-400 font-mono text-2xl font-bold">5</span>
-          <span class="text-cyan-400/60 text-sm ml-2">钩子事件</span>
+        <div class="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-baseline gap-2">
+          <span class="text-cyan-400 font-mono text-lg font-bold">5</span>
+          <span class="text-cyan-400/60 text-xs">钩子事件</span>
         </div>
-        <div class="px-4 py-2 rounded-xl bg-pink-500/10 border border-pink-500/20">
-          <span class="text-pink-400 font-mono text-2xl font-bold">10</span>
-          <span class="text-pink-400/60 text-sm ml-2">核心模块</span>
+        <div class="px-3 py-1.5 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-baseline gap-2">
+          <span class="text-pink-400 font-mono text-lg font-bold">10</span>
+          <span class="text-pink-400/60 text-xs">核心模块</span>
         </div>
       </div>
     </div>
@@ -714,23 +721,23 @@ allowed-tools:
 </div>
 
 <!-- Fixed Right Sidebar Navigation -->
-<aside class="hidden lg:flex flex-col fixed top-24 right-8 w-72 xl:w-80 h-[calc(100vh-8rem)] rounded-3xl bg-[#0a0f0a]/90 backdrop-blur-xl border border-emerald-500/20 overflow-hidden shadow-2xl z-40">
+<aside class="hidden lg:flex flex-col fixed top-28 right-8 w-72 xl:w-80 h-[calc(100vh-9rem)] rounded-3xl bg-[#0a0f0a]/95 backdrop-blur-xl border border-violet-500/20 overflow-hidden shadow-2xl z-40">
   <!-- Search Header -->
-  <div class="p-5 border-b border-emerald-500/10 bg-emerald-500/5">
+  <div class="p-5 border-b border-violet-500/10 bg-violet-500/5">
     <div class="relative">
-      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-violet-400/50" />
       <input
         type="search"
         placeholder="Search docs..."
         bind:value={searchQuery}
-        class="w-full h-10 pl-9 pr-4 rounded-xl bg-[#0a0f0a] border border-emerald-500/20 text-emerald-400 placeholder:text-emerald-400/30 font-mono text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
+        class="w-full h-10 pl-9 pr-4 rounded-xl bg-[#0a0f0a] border border-violet-500/20 text-violet-400 placeholder:text-violet-400/30 font-mono text-sm focus:outline-none focus:border-violet-500/50 transition-colors"
       />
     </div>
   </div>
 
   <!-- Navigation List -->
-  <div class="flex-1 overflow-y-auto p-3 space-y-1 scrollbar-thin">
-    <div class="px-3 py-2 text-xs font-bold text-emerald-400/40 uppercase tracking-wider font-mono">
+  <div class="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin">
+    <div class="px-3 py-2 text-xs font-bold text-violet-400/40 uppercase tracking-wider font-mono">
       Navigation
     </div>
     {#each filteredSections as section}
@@ -740,14 +747,14 @@ allowed-tools:
         class={cn(
           "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-mono transition-all group",
           activeSection === section.id
-            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-            : "text-emerald-400/60 hover:text-emerald-400 hover:bg-emerald-500/5 border border-transparent"
+            ? "bg-violet-500/10 text-violet-400 border border-violet-500/20"
+            : "text-violet-400/60 hover:text-violet-400 hover:bg-violet-500/5 border border-transparent"
         )}
         onclick={() => (activeSection = section.id)}
       >
         <div class={cn(
           "p-1.5 rounded-lg transition-colors",
-          activeSection === section.id ? "bg-emerald-500/20 text-emerald-400" : "bg-black/20 text-emerald-400/40 group-hover:text-emerald-400"
+          activeSection === section.id ? "bg-violet-500/20 text-violet-400" : "bg-black/20 text-violet-400/40 group-hover:text-violet-400"
         )}>
            <Icon class="w-3.5 h-3.5" />
         </div>
@@ -757,30 +764,30 @@ allowed-tools:
   </div>
 
   <!-- Quick Stats Footer -->
-  <div class="p-4 border-t border-emerald-500/10 bg-black/20 text-[10px] text-emerald-400/30 font-mono text-center">
-    Use <kbd class="px-1 py-0.5 rounded border border-emerald-500/20 bg-emerald-500/5 text-emerald-400/60">Cmd+K</kbd> to search
+  <div class="p-4 border-t border-violet-500/10 bg-black/20 text-[10px] text-violet-400/30 font-mono text-center">
+    Use <kbd class="px-1 py-0.5 rounded border border-violet-500/20 bg-violet-500/5 text-violet-400/60">Cmd+K</kbd> to search
   </div>
 </aside>
 
-<div class="max-w-5xl mx-auto lg:mr-[20rem] xl:mr-[24rem] space-y-8 pb-20 mt-8 transition-all duration-300">
+<div class="max-w-6xl mx-auto lg:mr-[20rem] xl:mr-[24rem] space-y-12 pb-20 mt-12 transition-all duration-300">
   <!-- Section 1: Slash Commands -->
   <section id="commands" class="scroll-mt-32">
     <button
-      class="w-full flex items-center justify-between p-5 rounded-2xl bg-[#0a0f0a] border border-emerald-500/20 hover:border-emerald-500/40 transition-colors group"
+      class="w-full flex items-center justify-between p-6 rounded-2xl bg-[#0a0f0a] border border-violet-500/20 hover:border-violet-500/40 transition-colors group"
       onclick={() => toggleSection("commands")}
     >
       <div class="flex items-center gap-4">
-        <div class="p-3 rounded-xl bg-emerald-500/10">
-          <Terminal class="w-6 h-6 text-emerald-400" />
+        <div class="p-3 rounded-xl bg-violet-500/10">
+          <Terminal class="w-6 h-6 text-violet-400" />
         </div>
         <div class="text-left">
           <h2 class="text-xl font-bold text-white font-mono">1. 斜杠命令</h2>
-          <p class="text-emerald-400/50 text-sm">内置命令和自定义命令开发</p>
+          <p class="text-violet-400/50 text-sm">内置命令和自定义命令开发</p>
         </div>
       </div>
       <ChevronDown
         class={cn(
-          "w-5 h-5 text-emerald-400/50 transition-transform",
+          "w-5 h-5 text-violet-400/50 transition-transform",
           expandedSections.has("commands") && "rotate-180"
         )}
       />
