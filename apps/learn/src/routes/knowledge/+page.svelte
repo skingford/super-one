@@ -27,6 +27,14 @@
   // Featured resources
   const featuredResources = [
     {
+      title: "Claude Code 完整知识手册",
+      description: "官方文档整理 - 命令、插件、代理、技能、钩子、权限、MCP 等核心功能",
+      href: "/knowledge/claude",
+      icon: Terminal,
+      gradient: "linear-gradient(135deg, rgba(16,185,129,0.4) 0%, rgba(6,182,212,0.2) 100%)",
+      tags: ["Claude Code", "官方文档", "完整指南"],
+    },
+    {
       title: "Everything Claude Code",
       description: "完整的 Claude Code 配置生态系统 - Agents、Skills、Hooks、Commands",
       href: "/knowledge/everything-claude-code",
