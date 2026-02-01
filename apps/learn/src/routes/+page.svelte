@@ -159,11 +159,11 @@
                 <span>© 2026 Learn Platform, Inc.</span>
            </div>
            <div class="flex gap-6">
-               <a href="#" class="hover:text-blue-400">Privacy</a>
-               <a href="#" class="hover:text-blue-400">Security</a>
-               <a href="#" class="hover:text-blue-400">Terms</a>
-               <a href="#" class="hover:text-blue-400">Docs</a>
-               <a href="#" class="hover:text-blue-400">Contact</a>
+               <a href="/privacy" class="hover:text-blue-400">Privacy</a>
+               <a href="/security" class="hover:text-blue-400">Security</a>
+               <a href="/terms" class="hover:text-blue-400">Terms</a>
+               <a href="/docs" class="hover:text-blue-400">Docs</a>
+               <a href="/contact" class="hover:text-blue-400">Contact</a>
            </div>
       </div>
   </footer>

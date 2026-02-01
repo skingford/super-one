@@ -5,6 +5,7 @@
   import Toast from "$lib/components/ui/Toast.svelte";
   import { knowledgeStore } from "$lib/stores/knowledge.svelte";
   import { interviewStore } from "$lib/stores/interview.svelte";
+  import { studyStore } from "$lib/stores/study.svelte";
   import { page } from "$app/stores";
   import { onMount } from "svelte";
 

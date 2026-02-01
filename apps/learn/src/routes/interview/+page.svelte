@@ -269,8 +269,9 @@
 
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <label class="text-sm font-medium text-white/80 mb-1.5 block">分类</label>
+        <label for="category" class="text-sm font-medium text-white/80 mb-1.5 block">分类</label>
         <select
+          id="category"
           class="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
           bind:value={newCategory}
         >
@@ -280,8 +281,9 @@
         </select>
       </div>
       <div>
-        <label class="text-sm font-medium text-white/80 mb-1.5 block">难度</label>
+        <label for="difficulty" class="text-sm font-medium text-white/80 mb-1.5 block">难度</label>
         <select
+          id="difficulty"
           class="w-full h-11 px-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
           bind:value={newDifficulty}
         >

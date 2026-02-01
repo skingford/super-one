@@ -105,8 +105,8 @@
     <!-- Check-in form -->
     <div class="space-y-6">
       <!-- Select plan -->
-      <div>
-        <label class="text-sm font-medium text-white/80 mb-3 block">选择学习计划</label>
+      <fieldset>
+        <legend class="text-sm font-medium text-white/80 mb-3 block">选择学习计划</legend>
         <div class="grid gap-3">
           {#each studyStore.activePlans as plan}
             {@const progress = studyStore.getPlanProgress(plan.id)}
@@ -127,11 +127,11 @@
             </button>
           {/each}
         </div>
-      </div>
+      </fieldset>
 
       <!-- Duration -->
-      <div>
-        <label class="text-sm font-medium text-white/80 mb-3 block">学习时长</label>
+      <fieldset>
+        <legend class="text-sm font-medium text-white/80 mb-3 block">学习时长</legend>
         <div class="flex flex-wrap gap-2 mb-3">
           {#each durationPresets as preset}
             <button
@@ -159,11 +159,11 @@
           />
           <span class="text-sm font-medium text-white w-20 text-right">{formatDuration(duration)}</span>
         </div>
-      </div>
+      </fieldset>
 
       <!-- Mood -->
-      <div>
-        <label class="text-sm font-medium text-white/80 mb-3 block">今天学习状态</label>
+      <fieldset>
+        <legend class="text-sm font-medium text-white/80 mb-3 block">今天学习状态</legend>
         <div class="grid grid-cols-5 gap-2">
           {#each Object.entries(MOOD_CONFIG) as [key, config]}
             <button
@@ -182,7 +182,7 @@
           {/each}
         </div>
         <p class="text-sm text-white/50 mt-3 text-center">{moodMessages[mood]}</p>
-      </div>
+      </fieldset>
 
       <!-- Content -->
       <div>

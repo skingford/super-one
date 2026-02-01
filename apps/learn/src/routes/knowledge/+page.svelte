@@ -290,8 +290,8 @@
       <Input id="title" bind:value={newTitle} placeholder="输入标题..." required class="bg-white/5 border-white/10 text-white" />
     </div>
 
-    <div>
-      <label class="text-sm font-medium text-white/80 mb-1.5 block">分类</label>
+    <fieldset>
+      <legend class="text-sm font-medium text-white/80 mb-1.5 block">分类</legend>
       <div class="grid grid-cols-4 gap-2">
         {#each knowledgeStore.categories as cat}
           {@const Icon = categoryIcons[cat.id] || FileText}
@@ -310,7 +310,7 @@
           </button>
         {/each}
       </div>
-    </div>
+    </fieldset>
 
     <div>
       <label for="content" class="text-sm font-medium text-white/80 mb-1.5 block">内容</label>
