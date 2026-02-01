@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(# Count versions in cache echo \"\"Versions in cache:\"\" ls ~/.claude/plugins/cache/omc/oh-my-claudecode/)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(bun run typecheck:*)",
+      "Bash(bun run lint:*)"
     ]
   }
 }

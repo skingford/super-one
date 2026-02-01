@@ -51,6 +51,16 @@
       border: "group-hover:border-violet-500/30",
       tags: ["Ecosystem", "Advanced"],
     },
+    {
+      title: "BMAD-METHOD",
+      description: "AI-driven agile development framework with 12+ specialized agents and 50+ guided workflows.",
+      href: "/knowledge/bmad-method",
+      icon: Cpu,
+      color: "text-cyan-400",
+      gradient: "from-cyan-500/20 to-emerald-500/5",
+      border: "group-hover:border-cyan-500/30",
+      tags: ["AI-Driven", "Agile"],
+    },
   ];
 
   // Form state
