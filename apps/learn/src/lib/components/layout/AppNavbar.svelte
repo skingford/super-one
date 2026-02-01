@@ -41,6 +41,7 @@
     <nav class="hidden md:flex items-center gap-1">
       {#each links as link}
         {@const active = isActive(link.href)}
+        {@const Icon = link.icon}
         <a 
           href={link.href}
           class="
@@ -50,8 +51,7 @@
               : 'text-muted-foreground hover:text-foreground hover:bg-white/5'}
           "
         >
-          <svelte:component 
-            this={link.icon} 
+          <Icon
             size={18} 
             class={active ? "text-violet-400" : "opacity-70"} 
           />
@@ -99,6 +99,7 @@
     <nav class="flex flex-col gap-2">
       {#each links as link}
         {@const active = isActive(link.href)}
+        {@const Icon = link.icon}
         <a 
           href={link.href}
           onclick={() => mobileOpen = false}
@@ -109,8 +110,7 @@
               : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'}
           "
         >
-          <svelte:component 
-            this={link.icon} 
+          <Icon
             size={24} 
             class={active ? "text-violet-400" : ""} 
           />

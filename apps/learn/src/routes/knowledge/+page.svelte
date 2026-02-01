@@ -281,8 +281,8 @@
       <Input id="title" bind:value={newTitle} placeholder="e.g. React Patterns" required />
     </div>
 
-    <div class="space-y-1.5">
-      <label class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</label>
+    <fieldset class="space-y-1.5">
+      <legend class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Category</legend>
       <div class="grid grid-cols-4 gap-2">
         {#each knowledgeStore.categories as cat}
           {@const Icon = categoryIcons[cat.id] || FileText}
@@ -301,7 +301,7 @@
           </button>
         {/each}
       </div>
-    </div>
+    </fieldset>
 
     <div class="space-y-1.5">
       <label for="content" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Content</label>

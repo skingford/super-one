@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="flex-1 p-4 font-mono text-sm text-slate-300">
-        <p><span class="text-purple-400">fn</span> <span class="text-blue-400">main</span>() \{</p>
+        <p><span class="text-purple-400">fn</span> <span class="text-blue-400">main</span>() {'{'}</p>
         <p class="pl-4"><span class="text-slate-500">// Welcome to Lumina Sandbox</span></p>
         <p class="pl-4">println!(<span class="text-green-400">"Hello, Lumina!"</span>);</p>
         <p>}</p>

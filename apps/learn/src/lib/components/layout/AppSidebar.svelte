@@ -28,11 +28,13 @@
 
 <!-- Mobile Overlay -->
 {#if mobileOpen}
-  <div 
+  <button
+    type="button"
     class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+    aria-label="Close sidebar"
     onclick={() => mobileOpen = false}
     transition:fade
-  ></div>
+  ></button>
 {/if}
 
 <!-- Sidebar Container -->
@@ -60,6 +62,7 @@
       
       {#each links as link}
         {@const active = isActive(link.href)}
+        {@const Icon = link.icon}
         <a 
           href={link.href}
           onclick={() => mobileOpen = false}
@@ -70,8 +73,7 @@
               : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'}
           "
         >
-          <svelte:component 
-            this={link.icon} 
+          <Icon
             size={20} 
             class={active ? "text-sidebar-primary drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]" : "group-hover:text-foreground transition-colors"} 
           />
