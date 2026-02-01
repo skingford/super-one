@@ -468,9 +468,189 @@ allowed-tools:
         )
       : sections
   );
+
+  // --- Search Filtering Logic ---
+
+  // Helper to check if text matches query
+  function matches(text: string | undefined, query: string) {
+    return text?.toLowerCase().includes(query.toLowerCase()) ?? false;
+  }
+
+  // 1. Slash Commands
+  const filteredCommandCategories = $derived.by(() => {
+    if (!searchQuery) return commandCategories;
+    return commandCategories
+      .map((cat) => ({
+        ...cat,
+        commands: cat.commands.filter(
+          (c) => matches(c.name, searchQuery) || matches(c.desc, searchQuery)
+        ),
+      }))
+      .filter((cat) => cat.commands.length > 0);
+  });
+
+  // 2. CLI Arguments
+  const filteredCliCategories = $derived.by(() => {
+    if (!searchQuery) return cliCategories;
+    return cliCategories
+      .map((cat) => ({
+        ...cat,
+        args: cat.args.filter(
+          (a) => matches(a.arg, searchQuery) || matches(a.desc, searchQuery)
+        ),
+      }))
+      .filter((cat) => cat.args.length > 0);
+  });
+
+  // 3. Keyboard Shortcuts
+  const filteredKeyboardShortcuts = $derived.by(() => {
+    if (!searchQuery) return keyboardShortcuts;
+    return keyboardShortcuts.filter(
+      (k) =>
+        matches(k.key, searchQuery) ||
+        matches(k.desc, searchQuery) ||
+        matches(k.note, searchQuery)
+    );
+  });
+
+  // 4. Extended Thinking
+  const filteredThinkingLevels = $derived.by(() => {
+    if (!searchQuery) return thinkingLevels;
+    return thinkingLevels.filter(
+      (l) =>
+        matches(l.level, searchQuery) ||
+        matches(l.usage, searchQuery) ||
+        l.keywords.some((k) => matches(k, searchQuery))
+    );
+  });
+
+  // 5. Input Modes
+  const filteredInputModes = $derived.by(() => {
+    if (!searchQuery) return inputModes;
+    return inputModes.filter(
+      (m) =>
+        matches(m.mode, searchQuery) ||
+        matches(m.desc, searchQuery) ||
+        matches(m.shortcut, searchQuery)
+    );
+  });
+
+  // 6. Frontmatter Fields
+  const filteredFrontmatterFields = $derived.by(() => {
+    if (!searchQuery) return frontmatterFields;
+    return frontmatterFields.filter(
+      (f) =>
+        matches(f.field, searchQuery) ||
+        matches(f.type, searchQuery) ||
+        matches(f.desc, searchQuery)
+    );
+  });
+
+  // 7. Hook Events
+  const filteredHookEvents = $derived.by(() => {
+    if (!searchQuery) return hookEvents;
+    return hookEvents.filter(
+      (h) =>
+        matches(h.event, searchQuery) ||
+        matches(h.timing, searchQuery) ||
+        matches(h.purpose, searchQuery)
+    );
+  });
+
+  // 8. Env Vars
+  const filteredEnvVars = $derived.by(() => {
+    if (!searchQuery) return envVars;
+    return envVars.filter(
+      (v) => matches(v.name, searchQuery) || matches(v.desc, searchQuery)
+    );
+  });
+
+  // 9. Models
+  const filteredModels = $derived.by(() => {
+    if (!searchQuery) return models;
+    return models.filter(
+      (m) =>
+        matches(m.name, searchQuery) ||
+        matches(m.features, searchQuery) ||
+        matches(m.usage, searchQuery)
+    );
+  });
+
+  // 10. Plugin Commands
+  const filteredPluginCommands = $derived.by(() => {
+    if (!searchQuery) return pluginCommands;
+    return pluginCommands
+      .map((cat) => ({
+        ...cat,
+        commands: cat.commands.filter(
+          (c) => matches(c.cmd, searchQuery) || matches(c.desc, searchQuery)
+        ),
+      }))
+      .filter((cat) => cat.commands.length > 0);
+  });
+
+  // 11. Plugin Scopes
+  const filteredPluginScopes = $derived.by(() => {
+    if (!searchQuery) return pluginScopes;
+    return pluginScopes.filter(
+      (s) =>
+        matches(s.scope, searchQuery) ||
+        matches(s.desc, searchQuery) ||
+        matches(s.file, searchQuery)
+    );
+  });
+
+  // 12. MCP Types
+  const filteredMcpTypes = $derived.by(() => {
+    if (!searchQuery) return mcpTypes;
+    return mcpTypes.filter(
+      (t) =>
+        matches(t.type, searchQuery) ||
+        matches(t.desc, searchQuery) ||
+        matches(t.usage, searchQuery)
+    );
+  });
+
+  // Auto-expand sections when searching
+  $effect(() => {
+    if (searchQuery) {
+      const newExpanded = new Set<string>();
+      if (filteredCommandCategories.length > 0 || filteredCliCategories.length > 0 || filteredKeyboardShortcuts.length > 0 || filteredThinkingLevels.length > 0 || filteredInputModes.length > 0 || filteredFrontmatterFields.length > 0) {
+        newExpanded.add("commands");
+      }
+      if (filteredPluginCommands.length > 0 || filteredPluginScopes.length > 0) {
+        newExpanded.add("plugin-commands");
+      }
+      if (matches("plugin", searchQuery) || matches("structure", searchQuery)) {
+        newExpanded.add("plugins");
+      }
+      if (matches("agent", searchQuery)) {
+        newExpanded.add("agents");
+      }
+      if (matches("skill", searchQuery)) {
+        newExpanded.add("skills");
+      }
+      if (filteredHookEvents.length > 0) {
+        newExpanded.add("hooks");
+      }
+      if (matches("permission", searchQuery)) {
+        newExpanded.add("permissions");
+      }
+      if (filteredMcpTypes.length > 0) {
+        newExpanded.add("mcp");
+      }
+      if (filteredEnvVars.length > 0) {
+        newExpanded.add("env");
+      }
+      if (filteredModels.length > 0) {
+        newExpanded.add("models");
+      }
+      expandedSections = newExpanded;
+    } 
+  });
 </script>
 
-<div class="max-w-6xl mx-auto space-y-8">
+<div class="max-w-6xl mx-auto space-y-8 pb-12">
   <!-- Terminal-style Header -->
   <div class="relative">
     <!-- Scanline overlay -->
@@ -531,9 +711,11 @@ allowed-tools:
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Search and Navigation -->
-  <div class="sticky top-20 z-30 -mx-4 px-4 py-3 backdrop-blur-xl bg-black/60">
+<!-- Search and Navigation (Sticky Top, Full Width Breakout) -->
+<div class="sticky top-0 z-50 w-screen ml-[calc(50%-50vw)] border-b border-emerald-500/20 bg-[#0a0f0a]/90 backdrop-blur-xl supports-[backdrop-filter]:bg-[#0a0f0a]/60">
+  <div class="max-w-6xl mx-auto px-4 py-3">
     <div class="flex items-center gap-4">
       <div class="relative flex-1 max-w-md">
         <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
@@ -564,7 +746,9 @@ allowed-tools:
       </div>
     </div>
   </div>
+</div>
 
+<div class="max-w-6xl mx-auto space-y-8 pb-20 mt-8">
   <!-- Section 1: Slash Commands -->
   <section id="commands" class="scroll-mt-32">
     <button
@@ -597,7 +781,7 @@ allowed-tools:
             内置命令 <span class="text-white/30 text-sm font-normal ml-2">({commandCategories.reduce((acc, cat) => acc + cat.commands.length, 0)} 个)</span>
           </h3>
           <div class="space-y-4">
-            {#each commandCategories as category}
+            {#each filteredCommandCategories as category}
               <div class="p-4 rounded-xl bg-white/5 border border-white/5">
                 <h4 class={cn(
                   "font-mono font-bold mb-3 text-sm",
@@ -638,7 +822,7 @@ allowed-tools:
             CLI 启动参数
           </h3>
           <div class="grid md:grid-cols-2 gap-4">
-            {#each cliCategories as category}
+            {#each filteredCliCategories as category}
               <div class="p-4 rounded-xl bg-white/5">
                 <h4 class="text-cyan-400 font-mono font-bold text-sm mb-3">{category.name}</h4>
                 <div class="space-y-2">
@@ -661,7 +845,7 @@ allowed-tools:
             键盘快捷键
           </h3>
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {#each keyboardShortcuts as shortcut}
+            {#each filteredKeyboardShortcuts as shortcut}
               <div class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
                 <kbd class="text-violet-400 font-mono text-sm font-bold">{shortcut.key}</kbd>
                 <p class="text-white/60 text-xs mt-1">{shortcut.desc}</p>
@@ -681,7 +865,7 @@ allowed-tools:
           </h3>
           <p class="text-white/50 text-sm mb-4">在提示词中添加关键词触发不同级别的思考预算。<strong class="text-amber-400">仅在 Claude Code CLI 中生效</strong>，不适用于网页版或 API。</p>
           <div class="grid md:grid-cols-3 gap-4">
-            {#each thinkingLevels as level}
+            {#each filteredThinkingLevels as level}
               <div class={cn(
                 "p-4 rounded-xl border",
                 level.color === "emerald" && "bg-emerald-500/10 border-emerald-500/20",
@@ -719,7 +903,7 @@ allowed-tools:
             输入模式
           </h3>
           <div class="grid md:grid-cols-3 gap-4">
-            {#each inputModes as mode}
+            {#each filteredInputModes as mode}
               <div class="p-4 rounded-xl bg-white/5 border border-white/5">
                 <div class="flex items-center justify-between mb-2">
                   <span class="text-pink-400 font-mono font-bold text-sm">{mode.mode}</span>
@@ -749,7 +933,7 @@ allowed-tools:
                   </tr>
                 </thead>
                 <tbody>
-                  {#each frontmatterFields as field}
+                  {#each filteredFrontmatterFields as field}
                     <tr class="border-b border-white/5">
                       <td class="py-2 font-mono text-cyan-400">{field.field}</td>
                       <td class="py-2 text-white/50">{field.type}</td>
@@ -831,7 +1015,7 @@ allowed-tools:
             /plugin 命令完整列表
           </h3>
           <div class="space-y-4">
-            {#each pluginCommands as category}
+            {#each filteredPluginCommands as category}
               <div class="p-4 rounded-xl bg-white/5 border border-white/5">
                 <h4 class={cn(
                   "font-mono font-bold mb-3 text-sm",
@@ -882,7 +1066,7 @@ allowed-tools:
                 </tr>
               </thead>
               <tbody>
-                {#each pluginScopes as scope}
+                {#each filteredPluginScopes as scope}
                   <tr class="border-b border-white/5 hover:bg-white/5">
                     <td class="py-3 font-mono text-violet-400">{scope.scope}</td>
                     <td class="py-3 font-mono text-white/50 text-xs">{scope.file}</td>
@@ -1162,7 +1346,7 @@ allowed-tools:
         <div class="p-6 rounded-2xl bg-[#0a0f0a]/80 border border-white/5">
           <h3 class="text-lg font-semibold text-white mb-4">钩子事件类型</h3>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {#each hookEvents as hook}
+            {#each filteredHookEvents as hook}
               <div class="p-4 rounded-xl bg-white/5 border border-white/5">
                 <code class={cn("font-mono font-bold", hook.color)}>{hook.event}</code>
                 <p class="text-white/40 text-xs mt-1">{hook.timing}</p>
@@ -1307,7 +1491,7 @@ allowed-tools:
           <div>
             <h3 class="text-lg font-semibold text-white mb-4">服务器类型</h3>
             <div class="space-y-2">
-              {#each mcpTypes as type}
+              {#each filteredMcpTypes as type}
                 <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5">
                   <code class="text-teal-400 font-mono min-w-[80px]">{type.type}</code>
                   <span class="text-white/40 text-sm">{type.desc}</span>
@@ -1373,7 +1557,7 @@ allowed-tools:
               </tr>
             </thead>
             <tbody>
-              {#each envVars as v}
+              {#each filteredEnvVars as v}
                 <tr class="border-b border-white/5 hover:bg-white/5">
                   <td class="py-3 font-mono text-orange-300">{v.name}</td>
                   <td class="py-3 text-white/60">{v.desc}</td>
@@ -1413,7 +1597,7 @@ allowed-tools:
     {#if expandedSections.has("models")}
       <div class="mt-4 p-6 rounded-2xl bg-[#0a0f0a]/80 border border-white/5 animate-fade-up">
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {#each models as model}
+          {#each filteredModels as model}
             <div class="p-5 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 transition-colors">
               <span class={cn("px-3 py-1 rounded-full text-sm font-mono font-bold", model.color)}>{model.name}</span>
               <p class="text-white/80 font-medium mt-3">{model.features}</p>

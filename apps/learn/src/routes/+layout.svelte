@@ -5,7 +5,7 @@
   import Toast from "$lib/components/ui/Toast.svelte";
   import { knowledgeStore } from "$lib/stores/knowledge.svelte";
   import { interviewStore } from "$lib/stores/interview.svelte";
-  import { studyStore } from "$lib/stores/study.svelte";
+  import { page } from "$app/stores";
   import { onMount } from "svelte";
 
   let { children } = $props();
@@ -42,7 +42,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
   />
 </svelte:head>
@@ -51,9 +51,11 @@
   <GradientBackground />
 
   {#if isClient}
-    <FloatingNav onUnlockInterview={handleUnlockInterview} {interviewUnlocked} />
+    <!-- {#if $page.url.pathname !== "/"}
+      <FloatingNav onUnlockInterview={handleUnlockInterview} {interviewUnlocked} />
+    {/if} -->
 
-    <main class="pt-28 pb-12 px-4 md:px-8 lg:px-12">
+    <main class="pt-12 pb-12 px-4 md:px-8 lg:px-12">
       <div class="max-w-7xl mx-auto">
         {@render children()}
       </div>
