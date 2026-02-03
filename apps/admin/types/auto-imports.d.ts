@@ -7,10 +7,6 @@
 export {};
 declare global {
   const EffectScope: typeof import("vue").EffectScope;
-  const ElLoading: typeof import("element-plus/es")["ElLoading"];
-  const ElMessage: typeof import("element-plus/es")["ElMessage"];
-  const ElMessageBox: typeof import("element-plus/es")["ElMessageBox"];
-  const ElNotification: typeof import("element-plus/es")["ElNotification"];
   const acceptHMRUpdate: typeof import("pinia").acceptHMRUpdate;
   const asyncComputed: typeof import("@vueuse/core").asyncComputed;
   const autoResetRef: typeof import("@vueuse/core").autoResetRef;
@@ -103,7 +99,6 @@ declare global {
   const refWithControl: typeof import("@vueuse/core").refWithControl;
   const resolveComponent: typeof import("vue").resolveComponent;
   const resolveRef: typeof import("@vueuse/core").resolveRef;
-  const resolveUnref: typeof import("@vueuse/core")["resolveUnref"];
   const setActivePinia: typeof import("pinia").setActivePinia;
   const setMapStoreSuffix: typeof import("pinia").setMapStoreSuffix;
   const shallowReactive: typeof import("vue").shallowReactive;
@@ -286,7 +281,7 @@ declare global {
   const useTransition: typeof import("@vueuse/core").useTransition;
   const useUrlSearchParams: typeof import("@vueuse/core").useUrlSearchParams;
   const useUserMedia: typeof import("@vueuse/core").useUserMedia;
-  const useUserStore: typeof import("./src/stores/user").useUserStore;
+  const useUserStore: typeof import("../src/stores/user").useUserStore;
   const useVModel: typeof import("@vueuse/core").useVModel;
   const useVModels: typeof import("@vueuse/core").useVModels;
   const useVibrate: typeof import("@vueuse/core").useVibrate;
@@ -645,7 +640,7 @@ declare module "vue" {
     readonly useTransition: UnwrapRef<typeof import("@vueuse/core")["useTransition"]>;
     readonly useUrlSearchParams: UnwrapRef<typeof import("@vueuse/core")["useUrlSearchParams"]>;
     readonly useUserMedia: UnwrapRef<typeof import("@vueuse/core")["useUserMedia"]>;
-    readonly useUserStore: UnwrapRef<typeof import("./src/stores/user")["useUserStore"]>;
+    readonly useUserStore: UnwrapRef<typeof import("../src/stores/user")["useUserStore"]>;
     readonly useVModel: UnwrapRef<typeof import("@vueuse/core")["useVModel"]>;
     readonly useVModels: UnwrapRef<typeof import("@vueuse/core")["useVModels"]>;
     readonly useVibrate: UnwrapRef<typeof import("@vueuse/core")["useVibrate"]>;

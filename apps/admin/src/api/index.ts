@@ -1,64 +1,72 @@
-import axios from "axios";
-import type { AxiosInstance, AxiosResponse } from "axios";
+import { createAlova } from "alova";
+import VueHook from "alova/vue";
+import adapterFetch from "alova/fetch";
+import type {
+  ApiResponse,
+  PaginatedResponse,
+  User,
+  Content,
+  LoginParams,
+  CreateUserParams,
+  UpdateUserParams,
+  CreateContentParams,
+  UpdateContentParams,
+  PaginationParams,
+  ContentListParams,
+} from "#types/api";
 
-const instance: AxiosInstance = axios.create({
+export const alovaInstance = createAlova({
   baseURL: "/api",
+  statesHook: VueHook,
+  requestAdapter: adapterFetch(),
   timeout: 10000,
-  headers: {
-    "Content-Type": "application/json",
+  beforeRequest(method) {
+    const token = localStorage.getItem("token");
+    if (token) {
+      method.config.headers.Authorization = `Bearer ${token}`;
+    }
+  },
+  responded: {
+    onSuccess: async (response) => {
+      if (response.status >= 400) {
+        throw new Error(response.statusText);
+      }
+      const json = await response.json();
+      return json;
+    },
+    onError: (error) => {
+      console.error("API Error:", error);
+      throw error;
+    },
   },
 });
 
-// Request interceptor
-instance.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// Response interceptor
-instance.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
-  (error) => {
-    console.error("API Error:", error);
-    return Promise.reject(error);
-  }
-);
-
-// Example API methods
 export const api = {
-  // Auth
-  login: (data: { username: string; password: string }) => instance.post("/auth/login", data),
+  login: (data: LoginParams) =>
+    alovaInstance.Post<ApiResponse<{ token: string }>>("/auth/login", data),
 
-  logout: () => instance.post("/auth/logout"),
+  logout: () => alovaInstance.Post<ApiResponse<null>>("/auth/logout"),
 
-  // Users
-  getUsers: (params?: { page?: number; pageSize?: number }) => instance.get("/users", { params }),
+  getUsers: (params?: PaginationParams) =>
+    alovaInstance.Get<PaginatedResponse<User>>("/users", { params }),
 
-  createUser: (data: { name: string; email: string; role: string }) =>
-    instance.post("/users", data),
+  createUser: (data: CreateUserParams) => alovaInstance.Post<ApiResponse<User>>("/users", data),
 
-  updateUser: (id: number, data: { name?: string; email?: string; role?: string }) =>
-    instance.put(`/users/${id}`, data),
+  updateUser: (id: number, data: UpdateUserParams) =>
+    alovaInstance.Put<ApiResponse<User>>(`/users/${id}`, data),
 
-  deleteUser: (id: number) => instance.delete(`/users/${id}`),
+  deleteUser: (id: number) => alovaInstance.Delete<ApiResponse<null>>(`/users/${id}`),
 
-  // Content
-  getContents: (params?: { page?: number; pageSize?: number; type?: string }) =>
-    instance.get("/contents", { params }),
+  getContents: (params?: ContentListParams) =>
+    alovaInstance.Get<PaginatedResponse<Content>>("/contents", { params }),
 
-  createContent: (data: { title: string; type: string; content: string }) =>
-    instance.post("/contents", data),
+  createContent: (data: CreateContentParams) =>
+    alovaInstance.Post<ApiResponse<Content>>("/contents", data),
 
-  updateContent: (id: number, data: { title?: string; content?: string; status?: string }) =>
-    instance.put(`/contents/${id}`, data),
+  updateContent: (id: number, data: UpdateContentParams) =>
+    alovaInstance.Put<ApiResponse<Content>>(`/contents/${id}`, data),
 
-  deleteContent: (id: number) => instance.delete(`/contents/${id}`),
+  deleteContent: (id: number) => alovaInstance.Delete<ApiResponse<null>>(`/contents/${id}`),
 };
 
-export default instance;
+export default alovaInstance;

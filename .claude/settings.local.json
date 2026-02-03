@@ -4,7 +4,15 @@
       "Bash(# Count versions in cache echo \"\"Versions in cache:\"\" ls ~/.claude/plugins/cache/omc/oh-my-claudecode/)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(bun run typecheck:*)",
-      "Bash(bun run lint:*)"
+      "Bash(bun run lint:*)",
+      "WebSearch",
+      "WebFetch(domain:vite.dev)",
+      "Bash(timeout 15 bun run dev:*)",
+      "Bash(bun run build:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(bun install)",
+      "Bash(npm view:*)"
     ]
   }
 }

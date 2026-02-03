@@ -6,6 +6,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { fileURLToPath, URL } from "node:url";
 
 // https://vite.dev/config/
+// Using rolldown-vite for faster builds (10-30x faster than Rollup)
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const isDev = mode === "development";
   const isProd = mode === "production";
@@ -29,13 +30,13 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           },
         ],
         resolvers: [ElementPlusResolver()],
-        dts: "auto-imports.d.ts",
+        dts: "types/auto-imports.d.ts",
         vueTemplate: true,
         dirs: ["src/composables/**", "src/stores/**"],
       }),
       Components({
         resolvers: [ElementPlusResolver()],
-        dts: "components.d.ts",
+        dts: "types/components.d.ts",
         dirs: ["src/components"],
         extensions: ["vue"],
         deep: true,
@@ -45,6 +46,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
+        "#types": fileURLToPath(new URL("./types", import.meta.url)),
       },
     },
 
@@ -68,15 +70,29 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 
     build: {
       target: "esnext",
-      minify: "esbuild",
       sourcemap: !isProd,
       chunkSizeWarningLimit: 1500,
       rollupOptions: {
         output: {
-          manualChunks: {
-            "vue-vendor": ["vue", "vue-router", "pinia"],
-            "element-plus": ["element-plus", "@element-plus/icons-vue"],
-            vueuse: ["@vueuse/core"],
+          // Rolldown uses advancedChunks instead of manualChunks
+          advancedChunks: {
+            groups: [
+              {
+                name: "vue-vendor",
+                test: /[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/,
+                priority: 20,
+              },
+              {
+                name: "element-plus",
+                test: /[\\/]node_modules[\\/](@element-plus|element-plus)[\\/]/,
+                priority: 15,
+              },
+              {
+                name: "vueuse",
+                test: /[\\/]node_modules[\\/]@vueuse[\\/]/,
+                priority: 10,
+              },
+            ],
           },
         },
       },
@@ -86,8 +102,12 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       include: ["vue", "vue-router", "pinia", "@vueuse/core", "element-plus"],
     },
 
-    esbuild: {
-      drop: isProd ? ["console", "debugger"] : [],
-    },
+    // Use define to drop console in production (works with both esbuild and oxc)
+    define: isProd
+      ? {
+          "globalThis.console.log": "(() => {})",
+          "globalThis.console.debug": "(() => {})",
+        }
+      : undefined,
   };
 });
