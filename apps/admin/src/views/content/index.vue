@@ -1,9 +1,20 @@
 <script setup lang="ts">
 import { Plus, Search, Edit, Delete, View } from "@element-plus/icons-vue";
 
-const searchQuery = ref("");
+type ContentItem = {
+  id: number;
+  title: string;
+  type: "Article" | "Page";
+  author: string;
+  status: "Published" | "Draft" | "Review";
+  date: string;
+};
 
-const contents = ref([
+const searchQuery = shallowRef("");
+const typeFilter = shallowRef<"" | "article" | "page">("");
+const statusFilter = shallowRef<"" | "published" | "draft" | "review">("");
+
+const contents = ref<ContentItem[]>([
   {
     id: 1,
     title: "Getting Started Guide",
@@ -37,6 +48,20 @@ const contents = ref([
     date: "2024-01-12",
   },
 ]);
+
+const filteredContents = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+
+  return contents.value.filter((item) => {
+    if (typeFilter.value && item.type.toLowerCase() !== typeFilter.value) return false;
+    if (statusFilter.value && item.status.toLowerCase() !== statusFilter.value) return false;
+
+    if (!query) return true;
+    return [item.title, item.author].some((field) =>
+      field.toLowerCase().includes(query),
+    );
+  });
+});
 </script>
 
 <template>
@@ -56,11 +81,11 @@ const contents = ref([
           clearable
           class="w-64"
         />
-        <el-select placeholder="Type" clearable class="w-32">
+        <el-select v-model="typeFilter" placeholder="Type" clearable class="w-32">
           <el-option label="Article" value="article" />
           <el-option label="Page" value="page" />
         </el-select>
-        <el-select placeholder="Status" clearable class="w-32">
+        <el-select v-model="statusFilter" placeholder="Status" clearable class="w-32">
           <el-option label="Published" value="published" />
           <el-option label="Draft" value="draft" />
           <el-option label="Review" value="review" />
@@ -68,7 +93,7 @@ const contents = ref([
       </div>
 
       <!-- Table -->
-      <el-table :data="contents" stripe>
+      <el-table :data="filteredContents" stripe>
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="title" label="Title" min-width="200" />
         <el-table-column prop="type" label="Type" width="100">

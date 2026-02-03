@@ -26,6 +26,7 @@
     "@vue/tsconfig": "^0.8.1",
     "autoprefixer": "^10.4.24",
     "postcss": "^8.5.4",
+    "sass": "^1.89.2",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.9.3",
     "unplugin-auto-import": "^21.0.0",

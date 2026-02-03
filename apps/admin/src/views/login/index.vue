@@ -8,14 +8,17 @@ const loginForm = reactive({
   password: "",
 });
 
-const loading = ref(false);
+const loading = shallowRef(false);
 
 const handleLogin = async () => {
   loading.value = true;
-  // Simulate login
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  loading.value = false;
-  router.push("/dashboard");
+  try {
+    // Simulate login
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await router.push("/dashboard");
+  } finally {
+    loading.value = false;
+  }
 };
 </script>
 

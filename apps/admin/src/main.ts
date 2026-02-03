@@ -2,7 +2,8 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
-import "./styles/main.css";
+import "./styles/tailwind.css";
+import "./styles/main.scss";
 import App from "./App.vue";
 import router from "./router";
 

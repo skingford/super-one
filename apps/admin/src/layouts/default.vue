@@ -3,7 +3,9 @@ import { useRoute } from "vue-router";
 import { Odometer, User, Document, Setting, Expand, Fold } from "@element-plus/icons-vue";
 
 const route = useRoute();
-const isCollapse = ref(false);
+const isCollapse = shallowRef(false);
+const asideWidth = computed(() => (isCollapse.value ? "64px" : "220px"));
+const breadcrumbTitle = computed(() => (route.meta.title as string | undefined) ?? "Dashboard");
 
 const menuItems = [
   { path: "/dashboard", title: "Dashboard", icon: Odometer },
@@ -20,7 +22,7 @@ const toggleSidebar = () => {
 <template>
   <el-container class="h-full">
     <!-- Sidebar -->
-    <el-aside :width="isCollapse ? '64px' : '220px'" class="border-r border-gray-200 transition-all duration-300">
+    <el-aside :width="asideWidth" class="border-r border-gray-200 transition-all duration-300">
       <div class="flex h-14 items-center justify-center border-b border-gray-200 px-4">
         <span v-if="!isCollapse" class="text-lg font-semibold">Super One</span>
         <span v-else class="text-lg font-semibold">S</span>
@@ -46,7 +48,7 @@ const toggleSidebar = () => {
           <el-button :icon="isCollapse ? Expand : Fold" text @click="toggleSidebar" />
           <el-breadcrumb separator="/">
             <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-            <el-breadcrumb-item>{{ route.meta.title }}</el-breadcrumb-item>
+            <el-breadcrumb-item>{{ breadcrumbTitle }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         <div class="flex items-center gap-4">
@@ -73,7 +75,7 @@ const toggleSidebar = () => {
   </el-container>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .el-menu {
   border-right: none;
 }

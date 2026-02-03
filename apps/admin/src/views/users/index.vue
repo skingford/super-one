@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import { Plus, Search, Edit, Delete } from "@element-plus/icons-vue";
 
-const searchQuery = ref("");
-const dialogVisible = ref(false);
+type UserItem = {
+  id: number;
+  name: string;
+  email: string;
+  role: "Admin" | "Editor" | "Viewer";
+  status: "Active" | "Inactive";
+};
 
-const users = ref([
+const searchQuery = shallowRef("");
+const dialogVisible = shallowRef(false);
+
+const users = ref<UserItem[]>([
   {
     id: 1,
     name: "John Doe",
@@ -35,18 +43,32 @@ const users = ref([
   },
 ]);
 
-const handleEdit = (row: (typeof users.value)[0]) => {
+const filteredUsers = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase();
+  if (!query) return users.value;
+
+  return users.value.filter((user) =>
+    [user.name, user.email, user.role, user.status].some((field) =>
+      field.toLowerCase().includes(query),
+    ),
+  );
+});
+
+const handleEdit = (row: UserItem) => {
   ElMessage.info(`Edit user: ${row.name}`);
 };
 
-const handleDelete = (row: (typeof users.value)[0]) => {
-  ElMessageBox.confirm(`Are you sure to delete ${row.name}?`, "Warning", {
-    confirmButtonText: "OK",
-    cancelButtonText: "Cancel",
-    type: "warning",
-  }).then(() => {
+const handleDelete = async (row: UserItem) => {
+  try {
+    await ElMessageBox.confirm(`Are you sure to delete ${row.name}?`, "Warning", {
+      confirmButtonText: "OK",
+      cancelButtonText: "Cancel",
+      type: "warning",
+    });
     ElMessage.success("Deleted successfully");
-  });
+  } catch {
+    // User canceled, no-op.
+  }
 };
 </script>
 
@@ -72,7 +94,7 @@ const handleDelete = (row: (typeof users.value)[0]) => {
       </div>
 
       <!-- Table -->
-      <el-table :data="users" stripe>
+      <el-table :data="filteredUsers" stripe>
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="name" label="Name" />
         <el-table-column prop="email" label="Email" />
