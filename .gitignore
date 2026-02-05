@@ -139,4 +139,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # build static files
-build
+build/
+
+.claude/settings.local.json
