@@ -61,6 +61,16 @@
       border: "group-hover:border-cyan-500/30",
       tags: ["AI-Driven", "Agile"],
     },
+    {
+      title: "OpenSpec",
+      description: "Spec-first + OPSX workflow to align humans and AI before coding.",
+      href: "/knowledge/openspec",
+      icon: BookOpen,
+      color: "text-amber-400",
+      gradient: "from-amber-500/20 to-orange-500/5",
+      border: "group-hover:border-amber-500/30",
+      tags: ["Spec-First", "OPSX"],
+    },
   ];
 
   // Form state
