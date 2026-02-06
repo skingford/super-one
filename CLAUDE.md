@@ -35,6 +35,7 @@ Super One is a personal brand website monorepo for a "Super Individual" (solopre
 bun dev              # Start web dev server (localhost:3000)
 bun dev:web          # Same as above
 bun dev:admin        # Start admin dev server (when available)
+cd apps/learn && bun run dev        # Start learn app dev server (0.0.0.0:5173)
 
 # Build
 bun run build        # Build all packages
@@ -48,6 +49,10 @@ bun run typecheck    # TypeScript check all packages
 
 # Maintenance
 bun run clean        # Remove all node_modules and build artifacts
+
+# Learn App (apps/learn)
+# Preview
+cd apps/learn && bun run preview    # Preview learn app (0.0.0.0:5173)
 ```
 
 ## Project Structure
